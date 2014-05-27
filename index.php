@@ -1,9 +1,11 @@
 <?php
+session_start();
 // General includes
-#read sqliteDB for variables
+include 'includes/session.php'; // load session activator
+include 'includes/classes.php'; // load database class
+include 'includes/config.php'; // read variables from database
 include 'includes/head.php'; //<head> tag
 include 'includes/header.php'; //include navbar
-include 'includes/license.php'; //include license check
 
 // Page specific libraries
 include 'libraries/gen-sec.php';
@@ -19,8 +21,8 @@ if ($page == "home") {
 	include 'gen/home.php';
 }elseif ($page == "sandbox") {
 	include 'gen/sandbox.php';
-}elseif ($page == "X") {
-	include '';
+}elseif ($page == "register") {
+	include 'gen/register.php';
 }elseif ($page == "X") {
 	include '';
 }elseif ($page == "X") {
