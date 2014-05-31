@@ -1,0 +1,214 @@
+Decimal,Subfleet,Alpha Tag,Mode,Description,Service Tag,Category
+1,,Test1,D,Testing,Other,Radio Service
+2,,Test2,D,Testing,Other,Radio Service
+4,,Test4,D,Testing,Other,Radio Service
+5,,Test5,D,Testing,Other,Radio Service
+6,,Test6,D,Testing,Other,Radio Service
+8,,Test8,D,Testing,Other,Radio Service
+56003,,CLE Streets,D,Streets,Public Works,Cleveland Public Works
+56011,,CLE RadioSvc,D,Radio Service,Public Works,Cleveland Public Works
+56029,,REG IO CLNG,D,Regional Interop  Calling,Interop,InteropCommon
+56030,,REGION 2 IO,D,Region 2 Interop,Interop,InteropCommon
+56031,,REGION 3 IO,D,Region 3 Interop,Interop,InteropCommon
+56032,,REGION 4 IO,D,Region 4 Interop,Interop,InteropCommon
+56033,,REGION 5 IO,D,Region 5 Interop,Interop,InteropCommon
+56034,,REGION 6 IO,D,Region 6 Interop,Interop,InteropCommon
+56035,,REGION 7 IO,D,Region 7 Interop,Interop,InteropCommon
+56036,,REGION 8 IO,D,Region 8 Interop,Interop,InteropCommon
+56037,,REGION 9 IO,D,Region 9 Interop,Interop,InteropCommon
+56038,,REGION 10 IO,D,Region 10 Interop,Interop,InteropCommon
+56039,,REGION 11 IO,D,Region 11 Interop,Interop,InteropCommon
+56040,,REGION 12 IO,D,Region 12 Interop,Interop,InteropCommon
+56041,,REGION 13 IO,D,Region 13 Interop,Interop,InteropCommon
+56042,,REGION 14 IO,D,Region 14 Interop,Interop,InteropCommon
+56043,,REGION 15 IO,D,Region 15 Interop,Interop,InteropCommon
+56044,,REGION 16 IO,D,Region 16 Interop,Interop,InteropCommon
+56050,,CLE BLDG 1,D,Building Maintenance 1,Public Works,Cleveland Hopkins International Airport CLE
+56051,,CLE BLDG 4,D,Building Maintenance 4,Public Works,Cleveland Hopkins International Airport CLE
+56053,,CLE BLDG 2,D,Building Maintenance 2,Public Works,Cleveland Hopkins International Airport CLE
+56054,,CLE CUSTODIA,D,Custodial Operations,Public Works,Cleveland Hopkins International Airport CLE
+56055,,CLE ELECT,D,Electrical,Public Works,Cleveland Hopkins International Airport CLE
+56056,,CLE ENG,D,Engineering,Public Works,Cleveland Hopkins International Airport CLE
+56057,,CLE AFM1,D,Airfield Maintenance 1,Public Works,Cleveland Hopkins International Airport CLE
+56058,,CLE AFM2,D,Airfield Maintenance 2,Public Works,Cleveland Hopkins International Airport CLE
+56059,,CLE AFM3,D,Airfield Maintenance 3,Public Works,Cleveland Hopkins International Airport CLE
+56062,,CLE OPS1,D,Operations,Public Works,Cleveland Hopkins International Airport CLE
+56063,,CLE OPS2,D,Operations 2,Public Works,Cleveland Hopkins International Airport CLE
+56064,,CLE UTIL,D,Utilities,Public Works,Cleveland Hopkins International Airport CLE
+56065,,CLE UTIL,D,Utilities,Public Works,Cleveland Hopkins International Airport CLE
+56068,,CLE ARFF OPS,D,ARFF Operations,Fire Dispatch,Cleveland Hopkins International Airport CLE
+56069,,CLE ARFF ALR,D,ARFF Alert,Fire Dispatch,Cleveland Hopkins International Airport CLE
+56070,,CLE ARFF ST1,D,ARFF Station 1,Fire-Talk,Cleveland Hopkins International Airport CLE
+56080,,BKL OPS,D,Operations,Public Works,Burke Lakefront Airport BKL
+56081,,BKL AFM,D,Airfield Maintenance,Public Works,Burke Lakefront Airport BKL
+56082,,BKL ARFF,D,ARFF Operations,Fire Dispatch,Burke Lakefront Airport BKL
+56083,,BKL OPS,D,Operations,Public Works,Burke Lakefront Airport BKL
+56084,,CLE OPS3,D,Operations 3,Public Works,Cleveland Hopkins International Airport CLE
+56087,,CFD TAC 1,D,Tac 1,Fire-Tac,Cleveland Fire Operations
+56088,,CFD TAC 2,D,Tac 2,Fire-Tac,Cleveland Fire Operations
+56089,,CFD TAC 3,D,Tac 3,Fire-Tac,Cleveland Fire Operations
+56090,,CFD TAC 4,D,Tac 4,Fire-Tac,Cleveland Fire Operations
+56091,,CFD TAC 5,D,Tac 5,Fire-Tac,Cleveland Fire Operations
+56092,,CFD TAC 6,D,Tac 6,Fire-Tac,Cleveland Fire Operations
+56093,,CFD HAZTAC,D,HazMat Tac,Fire-Tac,Cleveland Fire Operations
+56094,,CFD HAZSUIT,D,HazMat Suits,Fire-Tac,Cleveland Fire Operations
+56095,,CFD OPS,D,Operations,Fire-Tac,Cleveland Fire Operations
+56096,,CFD ST ALERT,D,Station Alert,Fire Dispatch,Cleveland Fire Operations
+56097,,CFD 12 FPB,D,Prevention Bureau,Fire-Talk,Cleveland Fire Operations
+56098,,CFD 14 ADMIN,D,Administration Ch 14,Fire-Talk,Cleveland Fire Operations
+56099,,CFD 16 DISP,D,Dispatch Ch 16,Fire Dispatch,Cleveland Fire Operations
+56100,,CFD SECURE,D,Arson  FIU,Fire-Talk,Cleveland Fire Operations
+56101,,CFD ARSN DSP,D,Arson Dispatch,Fire-Tac,Cleveland Fire Operations
+56102,,CEMS FR,D,First Responder,Fire-Tac,Cleveland EMS Operations
+56106,,CEMS DISP 1,D,Dispatch 1,EMS Dispatch,Cleveland EMS Operations
+56107,,CEMS DISP 2,D,Dispatch 2,EMS Dispatch,Cleveland EMS Operations
+56111,,CEMS EVENT 1,D,Event 1,EMS-Talk,Cleveland EMS Operations
+56112,,CEMS EVENT 2,D,Event 2,EMS-Talk,Cleveland EMS Operations
+56115,,METRO TRAUMA,D,MetroHealth ER,Hospital,Cleveland EMS Operations
+56120,,CLE AnimCtrl,D,Animal Control Services,Public Works,Cleveland Public Works
+56123,,CPD TRANSPOR,D,Transports,Law Talk,Cleveland Police Operations
+56129,,CPD D1 DISP,D,1st District Dispatch Ch 1,Law Dispatch,Cleveland Police Operations
+56130,,CPD D2 DISP,D,2nd District Dispatch Ch 2,Law Dispatch,Cleveland Police Operations
+56131,,CPD D3 DISP,D,3rd District Dispatch Ch 3,Law Dispatch,Cleveland Police Operations
+56132,,CPD D4 DISP,D,4th District Dispatch Ch 4,Law Dispatch,Cleveland Police Operations
+56133,,CPD D5 DISP,D,5th District Dispatch Ch 5,Law Dispatch,Cleveland Police Operations
+56134,,CPD SPEVT 1,D,Special Events 1,Law Talk,Cleveland Police Operations
+56135,,CPD SPEVT 2,D,Special Events 2,Law Talk,Cleveland Police Operations
+56137,,CPD TOWING,D,Towing Ch 7,Law Talk,Cleveland Police Operations
+56138,,CPD WARRANT,D,Warrants Ch 9,Law Talk,Cleveland Police Operations
+56139,,CPD HOPKINS,D,Hopkins Airport Unit,Law Dispatch,Cleveland Police Operations
+56140,,CPD D1 TAC,E,1st District Tactical,Law Tac,Cleveland Police Operations
+56141,,CPD D2 TAC,E,2nd District Tactical,Law Tac,Cleveland Police Operations
+56142,,CPD D3 TAC,E,3rd District Tactical,Law Tac,Cleveland Police Operations
+56143,,CPD D4 TAC,E,4th District Tactical,Law Tac,Cleveland Police Operations
+56144,,CPD D5 TAC,E,5th District Tactical,Law Tac,Cleveland Police Operations
+56145,,CPD SURVLNCE,E,Surveillance,Law Talk,Cleveland Police Operations
+56147,,CPD ACADEMY,D,Academy,Law Talk,Cleveland Police Operations
+56148,,CPD K9,D,K9 Units,Law Tac,Cleveland Police Operations
+56149,,CPD SWAT,E,SWAT,Law Tac,Cleveland Police Operations
+56150,,CPD CHOPPER,E,Helicopter,Law Tac,Cleveland Police Operations
+56151,,CPD TRAFFIC,D,Traffic unit,Law Tac,Cleveland Police Operations
+56154,,CPD CECOM,D,CPDCECOMS,Law Talk,Cleveland Police Operations
+56155,,CPD Common,D,Common,Law Talk,Cleveland Police Operations
+56156,,CPD Auxiliar,D,Auxiliary,Law Talk,Cleveland Police Operations
+56158,,CPD BOMB SQD,D,Bomb Squad,Law Tac,Cleveland Police Operations
+56159,,CPD SURVLNCE,E,Surveillance,Law Talk,Cleveland Police Operations
+56160,,CPD SURVLNCE,E,Surveillance,Law Talk,Cleveland Police Operations
+56162,,CLE CityHall,D,City Hall,Public Works,Cleveland Public Works
+56163,,CPD SURVLNC3,E,Surveillance Ch3,Law Talk,Cleveland Police Operations
+56168,,CLE Sewer 2,D,Water Pollution Control  Sewers and Drains,Public Works,Cleveland Department of Public Utilities
+56169,,CLE Sewer 1,D,Water Pollution Control  Sewers and Drains,Public Works,Cleveland Department of Public Utilities
+56172,,CLE Wtr 172,E,Division of Water encrypted,Public Works,Cleveland Department of Public Utilities
+56173,,CLE Wtr 173,D,Division of Water encrypted,Public Works,Cleveland Department of Public Utilities
+56174,,CLE Wtr 174,D,Division of Water,Public Works,Cleveland Department of Public Utilities
+56180,,CLE WtRep,D,Division of Water  Repair,Public Works,Cleveland Department of Public Utilities
+56181,,CLE Wtr Perm,D,Division of Water  Permits,Public Works,Cleveland Department of Public Utilities
+56182,,CLE WtrTrnOn,D,Division of Water  Turn On Service,Public Works,Cleveland Department of Public Utilities
+56183,,CLE WtrLnRep,D,Division of Water  Line Repair,Public Works,Cleveland Department of Public Utilities
+56184,,CLE Wtr Trb,D,Division of Water  Trouble Service,Public Works,Cleveland Department of Public Utilities
+56186,,CLE Wtr 186,D,Division of Water,Public Works,Cleveland Department of Public Utilities
+56187,,CLE WatDisp,D,Division of Water  Dispatch,Public Works,Cleveland Department of Public Utilities
+56188,,CLE WtUtlPD,D,Division of Water  Utilities Police,Public Works,Cleveland Department of Public Utilities
+56189,,CLE WtTrnOff,D,Division of Water  Turn Off Service,Public Works,Cleveland Department of Public Utilities
+56190,,CLE WtrLnRpr,D,Division of Water  Line Repair,Public Works,Cleveland Department of Public Utilities
+56193,,CLE WtrVlv,D,Division of Water  Valves,Public Works,Cleveland Department of Public Utilities
+56202,,CLE MUNI 1,D,Cleveland Municipal CourtCorrections,Corrections,Cleveland Police AdminOther
+56203,,CLE MUNI 2,D,Cleveland Municipal CourtCorrections,Corrections,Cleveland Police AdminOther
+56208,,CLE MUNI 9,D,Cleveland Municipal Court to Warrants Ch 9,Corrections,Cleveland Police AdminOther
+56211,,CuyCo ProcSv,D,Process Servers evictions,Law Tac,Cuyahoga County Sheriff
+56215,,CLE TraffEng,D,Traffic Engineering,Public Works,Cleveland Public Works
+56219,,CLE Strt Ops,D,Streets  Operations,Public Works,Cleveland Public Works
+56227,,CLE Strt Elc,D,Streets  Electrical,Public Works,Cleveland Public Works
+56230,,CLE Brdg Ops,D,Lift bridge operations,Public Works,Cleveland Public Works
+56238,,CLE Sanit W,D,Sanitation West,Public Works,Cleveland Public Works
+56239,,CLE Sanit E,D,Sanitation East,Public Works,Cleveland Public Works
+56240,,CLE Sanit C,D,Sanitation Central,Public Works,Cleveland Public Works
+56241,,CLE San Admn,D,Sanitation Admin,Public Works,Cleveland Public Works
+56244,,CLE FrstBase,D,Forestry Base,Public Works,Cleveland Public Works
+56245,,CLE Prp Dntn,D,Property Maintenance Downtown,Public Works,Cleveland Public Works
+56246,,CLE Prp Jeff,D,Property Maintenance Jefferson,Public Works,Cleveland Public Works
+56247,,CLE Prp Kamm,D,Property Maintenance Kamms,Public Works,Cleveland Public Works
+56248,,CLE FrstEast,D,Forestry East,Public Works,Cleveland Public Works
+56249,,CLE Prop Mnt,D,Property Maintenance,Public Works,Cleveland Public Works
+56250,,CLE PropMnt,D,Property Maintenance 2,Public Works,Cleveland Public Works
+56252,,CLE Prks Mnt,D,Parks Maintenance,Public Works,Cleveland Public Works
+56253,,CLE Prks Mnt,D,Parks Maintenance 2,Public Works,Cleveland Public Works
+56255,,CLE Frst,D,Forestry,Public Works,Cleveland Public Works
+56256,,CLE FrstWest,D,Forestry West,Public Works,Cleveland Public Works
+56257,,CLE Prks Mnt,D,Parks Maintenance 3,Public Works,Cleveland Public Works
+56263,,CLE CH Mnt,D,Cleveland City Hall Maintenance,Public Works,Cleveland Public Works
+56275,,CLE BldgMnt,D,Building Maintenance,Public Works,Cleveland Public Works
+56281,,CLE Bldg Mnt,D,Building Maintenance 2,Public Works,Cleveland Public Works
+56286,,Berea FG1,D,Fireground 1,Fire-Tac,Berea
+56287,,BrkPrk FG 1,D,Fireground 1,Fire-Tac,Brook Park
+56288,,MdbgHts FG1,D,Fireground 1,Fire-Tac,Middleburg Heights
+56289,,NRoyalFD FG1,D,Fireground 1,Fire-Tac,North Royalton
+56290,,OlmFls FG1,D,Olmsted Falls Fireground 1,Fire-Tac,Olmsted Falls  Olmsted Township
+56291,,OlmTwp FG1,D,Olmsted Twp Fireground 1,Fire-Tac,Olmsted Falls  Olmsted Township
+56292,,P Hts FG1,D,Fireground 1,Fire-Tac,Parma Heights
+56293,,Strngsvl FG1,D,Fireground 1,Fire-Tac,Strongsville
+56294,,Berea FG2,D,Fireground 2,Fire-Tac,Berea
+56295,,Brk Pk FG 2,D,Fireground 2,Fire-Tac,Brook Park
+56296,,MdbgHts FG2,D,Fireground 2,Fire-Tac,Middleburg Heights
+56297,,NRoyalFD FG2,D,Fireground 2,Fire-Tac,North Royalton
+56298,,OlmFls FG2,D,Olmsted Falls Fireground 3,Fire-Tac,Olmsted Falls  Olmsted Township
+56299,,OlmTwp FG2,D,Olmsted Twp Fireground 2,Fire-Tac,Olmsted Falls  Olmsted Township
+56300,,P Hts FG2,D,Fireground 2,Fire-Tac,Parma Heights
+56301,,Strngsvl FG2,D,Fireground 2,Fire-Tac,Strongsville
+56308,,BrkPk PD TC1,D,Police Tac1,Law Tac,Brook Park
+56309,,MdbgHts PTC1,D,Police Tac 1,Law Tac,Middleburg Heights
+56310,,NRoyal PTAC,D,Police Tac,Law Tac,North Royalton
+56313,,P Hts PDTac2,D,Police Tac 2,Law Tac,Parma Heights
+56316,,BrkPk PD TC2,E,Police Tac2,Law Tac,Brook Park
+56317,,MdbgHts PTC2,D,Police Tac 2,Law Tac,Middleburg Heights
+56328,,SouthwestGen,D,Southwest General,Hospital,Hospitals
+56329,,FairviewGen,D,Fairview General,Hospital,Hospitals
+56330,,ParmaGen,D,Parma General,Hospital,Hospitals
+56331,,StJohn Med,D,St John Medical Center,Hospital,Hospitals
+56332,,LakewoodHosp,D,Lakewood Hospital,Hospital,Hospitals
+56333,,KaiserParma,D,Kaiser Parma,Hospital,Hospitals
+56344,,Berea FD Dsp,D,Fire Dispatch,Fire Dispatch,Berea
+56361,,BrkPk RecCtr,D,Recreation Center,Public Works,Brook Park
+56363,,BrkPk Svc,D,Service Dept,Public Works,Brook Park
+56367,,BrkPk FD Dsp,D,Fire Dispatch,Fire Dispatch,Brook Park
+56377,,BrkPk PD Dsp,D,Police Dispatch,Law Dispatch,Brook Park
+56398,,MdbgHts FD,D,Fire Dispatch,Fire Dispatch,Middleburg Heights
+56407,,MdbgHts PD,E,Police Dispatch encrypted,Law Dispatch,Middleburg Heights
+56421,,NRoyalFD Dsp,D,Fire Dispatch,Fire Dispatch,North Royalton
+56427,,NRoyalPD Dsp,D,Police Dispatch,Law Dispatch,North Royalton
+56470,,OlmFls PD,D,Olmsted Falls  Olmsted Twp Police Dispatch,Law Dispatch,Olmsted Falls  Olmsted Township
+56478,,Olmsted FD,D,Fire Dispatch,Fire Dispatch,Olmsted Falls  Olmsted Township
+56488,,P Hts SnrCtr,D,Senior Center,Transportation,Parma Heights
+56489,,P Hts Svc,D,Service Department,Public Works,Parma Heights
+56494,,P Hts FD,D,Fire Dispatch,Fire Dispatch,Parma Heights
+56500,,P Hts PD,D,Police Dispatch,Law Dispatch,Parma Heights
+56509,,Strngsvl Rec,D,Recreation Center,Public Works,Strongsville
+56510,,Strngsvl Svc,D,Service Dept,Public Works,Strongsville
+56516,,Strngsvl FD,D,Fire Dispatch,Fire Dispatch,Strongsville
+56518,,Stvl FD Insp,D,Fire Inspector,Fire-Talk,Strongsville
+56519,,SFD NAS STN1,D,Fire Stn 1 Nighttime Alerting System,Fire Dispatch,Strongsville
+56520,,SFD NAS STN2,D,Fire Stn 2 Nighttime Alerting System,Fire Dispatch,Strongsville
+56521,,SFD NAS STN3,D,Fire Stn 3 Nighttime Alerting System,Fire Dispatch,Strongsville
+56522,,SFD NAS STN4,D,Fire Stn 4 Nighttime Alerting System,Fire Dispatch,Strongsville
+56528,,Strngsvl PD,E,Police Dispatch,Law Dispatch,Strongsville
+56538,,CuyCo SO Dsp,D,Dispatch,Law Dispatch,Cuyahoga County Sheriff
+56539,,CuyCo SO2,D,Channel 2,Law Tac,Cuyahoga County Sheriff
+56540,,CuyCo SOTac3,D,TAC3,Law Tac,Cuyahoga County Sheriff
+56541,,CuyCo SO Wrn,D,Warrant Unit,Law Tac,Cuyahoga County Sheriff
+56542,,CuyCo SO5,D,Channel 5,Law Tac,Cuyahoga County Sheriff
+56543,,CuyCo SO JC,D,Justice Center,Law Tac,Cuyahoga County Sheriff
+56544,,CuyCo SO7,D,Channel 7,Law Tac,Cuyahoga County Sheriff
+56545,,CuyCo SO8DB,E,Channel 8 Detectives,Law Tac,Cuyahoga County Sheriff
+56546,,CuySO IMPACT,D,Impact Unit,Law Tac,Cuyahoga County Sheriff
+56547,,CuyCO ProtSv,D,Cuyahoga County Protective Service,Law Dispatch,Cuyahoga County Sheriff
+56551,,CuySO JuvCrt,D,Juvenile CourtDetention Center,Corrections,Cuyahoga County Sheriff
+56576,,CMHA PD Disp,D,Police Dispatch,Law Dispatch,Cuyahoga Metropolitan Housing Authority
+56577,,CMHA PD Ch2,D,Police Ch 2,Law Talk,Cuyahoga Metropolitan Housing Authority
+56578,,CMHA PD Tac1,D,Police Tac 1,Law Tac,Cuyahoga Metropolitan Housing Authority
+56579,,CMHA PD Tac2,D,Police Tac 2 ,Law Tac,Cuyahoga Metropolitan Housing Authority
+56580,,CMHA PD Tac3,D,Police Tac 3,Law Tac,Cuyahoga Metropolitan Housing Authority
+56586,,CLE Parking,D,Parking  Meter Readers ,Public Works,Cleveland Public Works
+56587,,CLE Parking2,D,Parking  Meter Readers,Public Works,Cleveland Public Works
+56588,,CLE Parking3,D,Parking  Meter Readers,Public Works,Cleveland Public Works
+56598,,ECle FD Dsp,D,Fire Dispatch,Fire Dispatch,East Cleveland
+56599,,ECle FG1,D,Fireground 1,Fire-Tac,East Cleveland

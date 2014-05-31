@@ -18,6 +18,9 @@ $configHandle = new configDB();
 
 	$config['gmailaddr'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='gmailaddr'")->fetchArray()['VALUE'];
 	$config['gmailpass'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='gmailpass'")->fetchArray()['VALUE'];
+	
+	$config['globaladminemail'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='globaladminemail'")->fetchArray()['VALUE'];
 
-
+	$config['rrapikey'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='rrapikey'")->fetchArray()['VALUE'];
+	unset($configHandle);
 ?>

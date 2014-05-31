@@ -5,7 +5,8 @@ function updatePwd($username,$prevPass,$newPass,$newPassConf){
 	}
 	
 	$db = new userDB(); // Load up DB
-	$result = $db->query("SELECT * FROM USERS WHERE USERNAME='".charNumOnly($username)."'")->fetchArray();
+	$db->busyTimeout(5000);
+	$result = $db->query("SELECT * FROM USERS WHERE USERNAME='".charNumOnly($username)."' COLLATE NOCASE")->fetchArray();
 	
 	if (md5($prevPass.$result['PWSALT']) !== md5($result['PWD'].$result['PWSALT'])) {
 		return "Old password is incorrect";
@@ -22,6 +23,8 @@ function updatePwd($username,$prevPass,$newPass,$newPassConf){
 function addUser($regUsername,$regPw,$regEMail,$regLastName,$regFirstName){
 	//Filter E-Mail
 	//E-Mail contains invalid characters
+	$regUsername = strtolower($regUsername); //avoid duplicate DB entries like tylerwatt12 and TylerWatt12
+	$regEMail = strtolower($regEMail); //avoid duplicate DB entries like aBC@co.co and ABC@co.co
 	if ($regEMail !== filter_var($regEMail, FILTER_SANITIZE_EMAIL)) {
 		return "Bad E-Mail field";
 	}
@@ -55,7 +58,7 @@ function addUser($regUsername,$regPw,$regEMail,$regLastName,$regFirstName){
 	}
 	// First name validation
 	//First name contains bad characters
-	if ($regFirstName !== preg_replace("/[^A-Za-z0-9?!]/",'',$regFirstName)) {
+	if ($regFirstName !== preg_replace("/[^A-Za-z]/",'',$regFirstName)) {
 		return "Bad first name characters, allowed are A-z.";
 	}
 	//First name is too long
@@ -65,7 +68,7 @@ function addUser($regUsername,$regPw,$regEMail,$regLastName,$regFirstName){
 
 	// Last name validation
 	//Last name contains bad characters
-	if ($regLastName !== preg_replace("/[^A-Za-z0-9?!]/",'',$regLastName)) {
+	if ($regLastName !== preg_replace("/[^A-Za-z]/",'',$regLastName)) {
 		return "Bad last name characters, allowed are A-z.";
 	}
 	//Last name is too long
@@ -73,6 +76,7 @@ function addUser($regUsername,$regPw,$regEMail,$regLastName,$regFirstName){
 		return "Bad last name length, 16 characters maximum.";
 	}
 	$db = new userDB(); // Call database instance
+	$db->busyTimeout(5000);
 	$regPwSalt = saltGen(32); //Generate user specific salt that gets stored into DB
 	$regShashedPwd = md5($regPw.$regPwSalt); //Generate salted hashed password to store into DB
 	$query = $db->exec("INSERT INTO USERS (USERNAME,PWD,PWSALT,EMAIL,LN,FN,ACCTENABLED,USRLVL,NOTES) VALUES ('{$regUsername}','{$regShashedPwd}','{$regPwSalt}','{$regEMail}','{$regLastName}','{$regFirstName}','0','1','')");
@@ -97,7 +101,8 @@ function verifyUser($username,$authCode){
 	global $config;
 	$username = charNumOnly($username); // Sanitize it
 	$db = new userDB();
-	$result = $db->query("SELECT * FROM USERS WHERE USERNAME='".charNumOnly($username)."'"); //Get user info
+	$db->busyTimeout(5000);
+	$result = $db->query("SELECT * FROM USERS WHERE USERNAME='".charNumOnly($username)."' COLLATE NOCASE"); //Get user info
 	$userArray = $result->fetchArray(); //Store result into array
 	if($userArray['ACCTENABLED'] == 0){
 		//Check verify
@@ -106,15 +111,22 @@ function verifyUser($username,$authCode){
 			if (@$db->lastErrorMsg() !== "not an error") {
 				return "There was an error";
 			}
+			$_SESSION['reputation'] = 5;
 			return "Your account has been verified, you may log in now";
 		}else{
 			sendAuthEmail($userArray['USERNAME'],$userArray['EMAIL'],$userArray['PWSALT']); //re-email user with auth code
 			return "Incorrect validation code, a code has been resent to your email";
-			
-			
 		}
 	}else{
 		return "Your account is already verified, you may <a href=\"".$config['httpmethod'].$config['domain']."/?page=login\">log in</a>";
 	}
+}
+function saveNotes($username,$notes){
+	$notes = htmlspecialchars($notes); // Clean text field
+	$username = charNumOnly($username); // Clean username
+	$db = new userDB();
+	$db->busyTimeout(5000);
+	$result = $db->query("SELECT * FROM USERS WHERE USERNAME='".charNumOnly($username)."' COLLATE NOCASE");
+	return $result->fetchArray();
 }
 ?>

@@ -14,19 +14,19 @@
 class configDB extends SQLite3{
     function __construct()
     {
-        $this->open('../config.sqlite');
+        $this->open('../database/config.sqlite');
     }
 }
 class callsDB extends SQLite3{
     function __construct()
     {
-        $this->open('../calls.sqlite');
+        $this->open('../database/calls.sqlite');
     }
 }
 class logDB extends SQLite3{
     function __construct()
     {
-        $this->open('../log.sqlite');
+        $this->open('../database/log.sqlite');
     }
 }
 $configHandle = new configDB();
@@ -96,6 +96,7 @@ echo "LOG RECORDER by Tylerwatt12. Version 4.0.1\n\n\n\n";
 $logHandle = new logDB(); // Get ready to write to log
 $timestamp = time();
 $logHandle->exec("INSERT INTO 'LOG' (TIMESTAMP,TYPE,IP,USER,COMMENT) VALUES ('{$timestamp}','LOGRC','127.0.0.1','LOCALHOST','LogRecorderv4 was restarted')"); // Take note of logrecorder's status
+unset($logHandle);
 sleep(1);
 
 
@@ -116,7 +117,7 @@ while ($inc == 1) {
 			echo "\nRadioID  : ".sanitizefs($currentFile['RID']);
 			echo "\nRID name : ".sanitizefs($currentFile['RName']);
 			echo "\n[WAITING]:[.........]";
-		}elseif ($currentFile['action'] == 'Listen'){
+		}elseif ($currentFile['action'] == 'Listen' && empty($currentFile['RID']) == false){
 		#IF TG gets changed
 			#kill previous sox instances
 			killsox();
@@ -128,6 +129,7 @@ while ($inc == 1) {
 
 			#set folder format
 			$dashedDate = date("Y-m-d");
+			$date = date("Ymd");
 			$fullSavePath = $config['callsavedir'].$dashedDate."/";
 			$frozenTime = microtime();
 			$saveFilename = substr($frozenTime, -10).substr($frozenTime, 2,6);
@@ -136,13 +138,17 @@ while ($inc == 1) {
 			}
 			pclose(popen("start /min sox.exe -t waveaudio ".$config['wad']." -r".$config['srate']." -c1 \"".$fullSavePath.$saveFilename.".mp3\"","r"));
 			$callsHandle = new callsDB(); // call database
-			$callsHandle->exec("INSERT INTO \"".date('Y')."\" (UNIXTS,TGID,RID,LOCATION) VALUES ('{$saveFilename}','{$currentFile['TGID']}','{$currentFile['RID']}','{$dashedDate}')");
+			$callsHandle->exec("INSERT INTO \"".date('Y')."\" (UNIXTS,TGID,RID,LOCATION) VALUES ('{$saveFilename}','{$currentFile['TGID']}','{$currentFile['RID']}','{$date}')");
+			unset($callsHandle);
 			clearstatcache();	
 		}
 	}elseif((filemtime($config['trunkloc'])+3600) < time()){
 		if (($sentTime+3600) < time()){
 			sendMail("LogRecorder ERROR","<b>LogRecorder ERROR, no calls in the past hour on, date: ".date("F j, Y, g:i a")."</b>");
-			#writeLog("LRERR","Log Recorder hasn't had any calls for an hour");
+			$logHandle = new logDB(); // Get ready to write to log
+			$timestamp = time();
+			$logHandle->exec("INSERT INTO 'LOG' (TIMESTAMP,TYPE,IP,USER,COMMENT) VALUES ('{$timestamp}','LOGTM','127.0.0.1','LOCALHOST','LogRecorderV4 hasn't had any calls for an hour')"); // Take note of logrecorder's status
+			unset($logHandle);
 			$sentTime = time();
 		}
 		#if file hasn't been changed in an hour

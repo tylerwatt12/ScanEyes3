@@ -29,6 +29,7 @@ function sendMail($title,$body,$recip){
 }
 function sendAuthEmail($regUname,$regEMail,$regPwSalt){
 	global $config;
+	$_SESSION['reputation']--;
 	$result = sendMail("ScanEyes Activation E-Mail","Here is your activation code: ".$regPwSalt."
 		<br>Alternatively, you can click <a href=\"".$config['httpmethod'].$config['domain']."/?page=auth&username=".$regUname."&code=".$regPwSalt."\">here</a>"
 	,$regEMail);
