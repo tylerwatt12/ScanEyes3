@@ -1,5 +1,9 @@
 <?php
+if (basename($_SERVER['SCRIPT_FILENAME']) == basename($_SERVER['REQUEST_URI'])){
+	exit();
+}
 include 'libraries/db-write.php';
+include 'libraries/db-read.php';
 include 'libraries/gen-gen.php';
 /* 
 This file imports from the RR DB into calls.db->TGRELATE
@@ -7,11 +11,10 @@ If TGs are found that aren't already in the SQLite DB, it will automatically add
 If TGs are found with identical TGID and descriptions, they will be skipped
 If TGs are found with differing descriptions, the user will have the option to overwrite their existing definitions
 RR premium account needed
-Alternate import method: uncomment deprecated snippet, comment out the soap client.
-Download [SID].csv from radioreference and put it into /static/. Make sure your $config['rrdbsid'] matches the [SID].csv file
 */
-if ($_SESSION['usrlvl'] < 3) { // If user isn't a DB admin or higher, stop page load
-	exit();
+secReq(3); // Users 3+ can use this page
+if (@!$config['rrdbsid']) {
+	echo "rrdbsid is not set.";
 }
 if (@!$_POST['rrdbUsername'] && @!$_POST['rrdbPassword']) { // If there was
 	echo '<b>Please log into Radioreference</b>
@@ -35,23 +38,28 @@ $startTime = time(); // Start timer
 						"version" => "12",
 						"style" => "doc",);
 		/* pull data */
-		$getTGList = $client->getTrsTalkgroups('7337',NULL,NULL,NULL,$authInfo); // Get talkgroup(indescript) names and TGIDs
-		$getTGCats = $client->getTrsTalkgroupCats('7337',$authInfo); // Get categories, these will be matched to talkgroups
+		$getTGList = $client->getTrsTalkgroups($config['rrdbsid'],NULL,NULL,NULL,$authInfo); // Get talkgroup(indescript) names and TGIDs
+		$getTGCats = $client->getTrsTalkgroupCats($config['rrdbsid'],$authInfo); // Get categories, these will be matched to talkgroups
 	}catch(SoapFault $fault){
 		echo"Bad username or password";
 		exit;
 	}
-	/* simplify talkgroup categories, return array with $category[catID] = "Category Name" */
-	foreach ($getTGCats as $objectNo => $singleCatObj) {
-		$category[$singleCatObj->tgCid] = $singleCatObj->tgCname; // $category[19662] = "Cleveland Department of Public Utilities"
-	}
-	foreach ($getTGList as $TgCounter => $TGINFO) {
-		$talkGroup[$TGINFO->tgDec] = $category[$TGINFO->tgCid]." ".$TGINFO->tgDescr; // $talkGroup[56427] = "North Royalton Police Dispatch"
-	}
 /// END SOAP CLIENT
+	/*  Get list of TAGs (PoliceDispatch, Police-Tac, etc) AND SET COLORS FOR TGS */
+		$tagIDs = getTGTags();
+		
+	/* simplify talkgroup categories, return array with $category[catID] = "Category Name" */
+		foreach ($getTGCats as $objectNo => $singleCatObj) {
+			$category[$singleCatObj->tgCid] = $singleCatObj->tgCname; // $category[19662] = "Cleveland Department of Public Utilities"
+		}
+		foreach ($getTGList as $TgCounter => $TGINFO) {
+			$talkTag[$TGINFO->tgDec] =  $tagIDs[$TGINFO->tags[0]->tagId]["TAG"]; // $talkTag[56427] = "Police Dispatch"
+			$talkColor[$TGINFO->tgDec] =  $tagIDs[$TGINFO->tags[0]->tagId]["COLOR"]; // $talkTag[56427] = "#0000FF"
+			$talkGroup[$TGINFO->tgDec] = $category[$TGINFO->tgCid]." ".$TGINFO->tgDescr; // $talkGroup[56427] = "North Royalton Police Dispatch"
+		}
 
 
-/*							THIS METHOD IS DEPRECATED BUT WILL STILL WORK UNCOMMENTED					###
+/*							THIS METHOD IS DEPRECATED
 if (@is_file("static/".$config['rrdbsid'].".csv") == false) {
 	echo $config['rrdbsid'].".csv not found in ./static/";
 	exit();
@@ -101,6 +109,8 @@ $db->busyTimeout(5000);
 $db->exec($compiledStatement); // Execute
 if ($db->lastErrorMsg() !== "not an error") {
 		// other uncaught error
+		$timeTaken = time() - $startTime;
+		echo "Database failed to write in ".$timeTaken." seconds";
 		echo "Unhandled exception: ".$db->lastErrorMsg();
 	}elseif ($db->lastErrorMsg() == "not an error") {
 		$timeTaken = time() - $startTime;
@@ -125,12 +135,14 @@ $skippedIdenticals = talkgroups skipped because they have the same value as befo
 		<tr>
 			<th>TGID</th>
 			<th>Name</th>
+			<th>Tag</th>
+			<th>Color</th>
 	</thead>
 	<tbody>
 		<?php
 			if (@$added) {
 				foreach ($added as $TGID => $name) {
-					echo "<tr><td>".$TGID."</td><td>".$name."</td></tr>";
+					echo "<tr><td>".$TGID."</td><td>".$name."</td><td>".$talkTag[$TGID]."</td><td bgcolor=\"".$talkColor[$TGID]."\"></td></tr>";
 				}
 			}
 		?>
@@ -143,12 +155,14 @@ $skippedIdenticals = talkgroups skipped because they have the same value as befo
 			<th>TGID</th>
 			<th>From</th>
 			<th>To</th>
+			<th>Tag</th>
+			<th>Color</th>
 	</thead>
 	<tbody>
 		<?php
 			if (@$overwriteFrom) {
 				foreach ($overwriteFrom as $TGID => $name) {
-					echo "<tr><td>".$TGID."</td><td>".$name."</td><td>".$overwriteTo[$TGID]."</td></tr>";
+					echo "<tr><td>".$TGID."</td><td>".$name."</td><td>".$overwriteTo[$TGID]."</td><td>".$talkTag[$TGID]."</td><td bgcolor=\"".$talkColor[$TGID]."\"></td></tr>";
 				}
 			}
 		?>
@@ -160,12 +174,14 @@ $skippedIdenticals = talkgroups skipped because they have the same value as befo
 		<tr>
 			<th>TGID</th>
 			<th>Name</th>
+			<th>Tag</th>
+			<th>Color</th>
 	</thead>
 	<tbody>
 		<?php
 			if (@$skippedIdenticals) {
 				foreach ($skippedIdenticals as $TGID => $name) {
-					echo "<tr><td>".$TGID."</td><td>".$name."</td></tr>";
+					echo "<tr><td>".$TGID."</td><td>".$name."</td><td>".$talkTag[$TGID]."</td><td bgcolor=\"".$talkColor[$TGID]."\"></td></tr>";
 				}
 			}
 		?>

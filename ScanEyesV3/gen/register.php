@@ -1,11 +1,15 @@
 <?php
-include 'libraries/gen-gen.php';
+if (basename($_SERVER['SCRIPT_FILENAME']) == basename($_SERVER['REQUEST_URI']) || $config['acctcreateenabled'] == "no"){
+	exit();
+}
 include 'libraries/db-write.php';
+include 'libraries/db-read.php';
+include 'libraries/gen-gen.php';
 if (@$_POST['regUsername'] && $_POST['regPw'] && $_POST['regEMail'] && $_POST['regLastName'] && $_POST['regFirstName']) {
 	// register user
 	// $regUsername,$regPw,$regEMail,$regLastName,$regFirstName
 	echo addUser($_POST['regUsername'],$_POST['regPw'],$_POST['regEMail'],$_POST['regLastName'],$_POST['regFirstName']);
-}elseif($config['acctcreateenabled'] == "yes"){
+}else{
 	// Allow user to create account
 	echo '<form method="POST">
 			Username: <input type="text" name="regUsername"><br>

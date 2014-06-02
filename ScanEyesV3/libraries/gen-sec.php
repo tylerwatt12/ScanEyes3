@@ -13,7 +13,7 @@ function charNumSymOnly($input){
 	//MAY NOT WORK RIGHT
 	return preg_replace("/^[\w]$/", "", $input);
 }
-function saltGen($strength) {
+function AuthGen($strength) {
 	// Generates salt for password
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $randomString = '';
@@ -21,5 +21,11 @@ function saltGen($strength) {
         $randomString .= $characters[rand(0, strlen($characters) - 1)];
     }
     return $randomString;
+}
+function secReq($usrlvl){
+	global $_SESSION;
+	if ($_SESSION['usrlvl'] < $usrlvl) { // If user isn't a DB admin or higher, stop page load
+		exit();
+	}
 }
 ?>

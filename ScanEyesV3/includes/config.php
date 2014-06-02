@@ -15,6 +15,8 @@ $configHandle = new configDB();
 	$config['motdtitle'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='motdtitle'")->fetchArray()['VALUE'];
 	$config['motdbody'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='motdbody'")->fetchArray()['VALUE'];
 	$config['httpmethod'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='httpmethod'")->fetchArray()['VALUE'];
+	$config['mintgidbrowselvl'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='mintgidbrowselvl'")->fetchArray()['VALUE'];
+	$config['mincallbrowselvl'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='mincallbrowselvl'")->fetchArray()['VALUE'];
 
 	$config['gmailaddr'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='gmailaddr'")->fetchArray()['VALUE'];
 	$config['gmailpass'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='gmailpass'")->fetchArray()['VALUE'];
