@@ -1,20 +1,10 @@
 <?php
 // General includes
 include 'includes/session.php'; // load session activator and reputation set
-#session_destroy(); //reset banned users
-#function customError($errno, $errstr) {
-##  echo "<b>Error:</b> [$errno] $errstr";
-#}
-#set_error_handler("customError");
 include 'includes/classes.php'; // load database class
 include 'includes/config.php'; // read variables from database
 include 'includes/head.php'; //<head> tag
 
-
-if ($_SESSION['reputation'] < 1) {
-	echo "Please contact the database administrator for assistance. ".$config['globaladminemail'];
-	exit();
-}
 // Page specific libraries
 include 'libraries/gen-sec.php';
 
@@ -46,8 +36,8 @@ if ($page == "home") {
 }elseif ($page == "login") {
 	include 'gen/login.php';
 
-}elseif ($page == "importcsv") {
-	include 'gen/importcsv.php';
+}elseif ($page == "importrr") {
+	include 'gen/importrr.php';
 
 }elseif ($page == "logoff") {
 	include 'gen/logoff.php';

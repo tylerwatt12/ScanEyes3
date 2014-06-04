@@ -85,11 +85,36 @@
 		}
 		return $tagID;
 	}
-	function getNotes($username){
+function getNotes($username){
 	$username = charNumOnly($username); // Clean username
 	$db = new userDB();
 	$db->busyTimeout(5000);
 	$result = $db->query("SELECT NOTES FROM USERS WHERE USERNAME='{$username}'"); //query for notes file in user profile
 	return $result->fetchArray()['NOTES']; // return notes for specific user
 }
+function getTGList(){
+	################################################
+	################################################
+	#			GET DATA FROM LOCAL DB 			   #
+	################################################
+	################################################
+		$db = new callsDB(); // Call database instance
+		$db->busyTimeout(5000);
+		$result = $db->query("SELECT * FROM TGRELATE"); // Select all the TGID INFO from the DB
+		unset($db); // unlock database
+		while($res = $result->fetchArray(SQLITE3_ASSOC)){ //While there are SQL returned entries,
+		 if(!isset($res['TGID'])) continue;  //If there are no more values, kill loop
+			 /*
+			$currTGID[56181] = 
+			  [56181]=>
+			    ["Name"]=> "Cleveland Department of Public Utilities Division of Water - Permits"
+			    ["Category"]=> "Public Works"
+			    ["Color"]=> "#00FF00"
+			*/
+		  $curTGID[$res['TGID']] = array('NAME' => $res['NAME'],
+		  								"CATEGORY" => $res['TAG']);
+		}
+		ksort($curTGID);
+		return $curTGID;
+	}
 ?>
