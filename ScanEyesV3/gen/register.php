@@ -4,7 +4,6 @@ if (basename($_SERVER['SCRIPT_FILENAME']) == basename($_SERVER['REQUEST_URI']) |
 }
 include 'libraries/db-write.php';
 include 'libraries/db-read.php';
-include 'libraries/gen-gen.php';
 if (@$_POST['regUsername'] && $_POST['regPw'] && $_POST['regEMail'] && $_POST['regLastName'] && $_POST['regFirstName']) {
 	// register user
 	// $regUsername,$regPw,$regEMail,$regLastName,$regFirstName
@@ -19,8 +18,6 @@ if (@$_POST['regUsername'] && $_POST['regPw'] && $_POST['regEMail'] && $_POST['r
 			Last Name: <input type="text" name="regLastName"><br>
 			<input type="submit">
 	';
-}else{
-	// Users aren't allowed to create accounts
 }
 
 ?>

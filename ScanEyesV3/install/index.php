@@ -1,10 +1,10 @@
 <?php
-
-if (@!$_GET['instpage']){
-	$_GET['instpage'] = 1;
+if (@!$_GET['step']) {
+	$step = 1;
+}else{
+	$step = $_GET['step'];	
 }
-include('install/sidebar.php');
-
-include("install/page".$_GET['instpage'].".php");
+include('sidebar.php');
+include('page'.$step.'.php');
 
 ?>

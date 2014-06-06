@@ -1,5 +1,6 @@
 <?php
 session_start();
+#session_destroy(); //reset banned users
 if (@!$_SESSION['usrlvl']) { //If user isn't logged in, grant guest access
 	$_SESSION['usrlvl'] = 1;
 }
@@ -7,10 +8,10 @@ if (@isset($_SESSION['reputation']) == false){
 	$_SESSION['reputation'] = 5;
 }
 if ($_SESSION['reputation'] < 1) {
-	echo "Please contact the administrator for assistance. ".$config['globaladminemail'];
+	echo "Please contact the administrator for assistance. ";
 	exit();
 }
-#session_destroy(); //reset banned users
+
 #function customError($errno, $errstr) {
 ##  echo "<b>Error:</b> [$errno] $errstr";
 #}

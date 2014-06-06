@@ -1,8 +1,9 @@
-page 1 contents
+<?php
 
-DELETE the install folder when install is finished
 
-Get user info
+?>
+Welcome to ScanEyes, lets get things started
 
-select key server
-Get RRAPI Key from server
+<form action="index.php?step=2" method="POST">
+	<input type="submit" value="Next">
+</form>

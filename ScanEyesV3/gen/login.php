@@ -4,7 +4,6 @@ if (basename($_SERVER['SCRIPT_FILENAME']) == basename($_SERVER['REQUEST_URI'])){
 }
 include 'libraries/db-write.php';
 include 'libraries/db-read.php';
-include 'libraries/gen-gen.php';
 if ($_SESSION['usrlvl'] > 1) {
 	echo "You are already logged in";
 	exit;

@@ -4,7 +4,6 @@ if (basename($_SERVER['SCRIPT_FILENAME']) == basename($_SERVER['REQUEST_URI'])){
 }
 include 'libraries/db-write.php';
 include 'libraries/db-read.php';
-include 'libraries/gen-gen.php';
 if (@$_GET['code'] && @$_GET['username'] || @$_POST['code'] && @$_POST['username']) {
 	if (@$_GET['code']) {
 		$code = htmlspecialchars(charNumOnly($_GET['code']));

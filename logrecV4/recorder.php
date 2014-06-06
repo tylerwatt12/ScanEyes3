@@ -92,10 +92,11 @@ function sanitizefs($filename){
 
 #INITIALIZE CODE
 killsox(); //Kill any existing instances of SOX
-echo "LOG RECORDER by Tylerwatt12. Version 4.0.2\n\n\n\n";
+echo "LOG RECORDER by Tylerwatt12. Version 4.0.3\n\n\n\n";
 sendMail("LogRecorder STARTED","<b>LogRecorder was started or restarted on: ".date("F j, Y, g:i a")."</b>");
 $logHandle = new logDB(); // Get ready to write to log
 $timestamp = time();
+$logHandle->busyTimeout(5000);
 $logHandle->exec("INSERT INTO 'LOG' (TIMESTAMP,TYPE,IP,USER,COMMENT) VALUES ('{$timestamp}','LOGRC','127.0.0.1','LOCALHOST','LogRecorderv4 was restarted')"); // Take note of logrecorder's status
 unset($logHandle);
 sleep(1);
@@ -139,6 +140,7 @@ while ($inc == 1) {
 			}
 			pclose(popen("start /min sox.exe -t waveaudio ".$config['wad']." -r".$config['srate']." -c1 \"".$fullSavePath.$saveFilename.".mp3\"","r"));
 			$callsHandle = new callsDB(); // call database
+			$callsHandle->busyTimeout(5000);
 			$callsHandle->exec("INSERT INTO \"".date('Y')."\" (UNIXTS,TGID,RID,LOCATION) VALUES ('{$saveFilename}','{$currentFile['TGID']}','{$currentFile['RID']}','{$date}')");
 			unset($callsHandle);
 			clearstatcache();	
@@ -148,6 +150,7 @@ while ($inc == 1) {
 			sendMail("LogRecorder ERROR","<b>LogRecorder ERROR, no calls in the past hour on, date: ".date("F j, Y, g:i a")."</b>");
 			$logHandle = new logDB(); // Get ready to write to log
 			$timestamp = time();
+			$logHandle->busyTimeout(5000);
 			$logHandle->exec("INSERT INTO 'LOG' (TIMESTAMP,TYPE,IP,USER,COMMENT) VALUES ('{$timestamp}','LOGTM','127.0.0.1','LOCALHOST','LogRecorderV4 has not had any calls for an hour')"); // Take note of logrecorder's status
 			unset($logHandle);
 			$sentTime = time();

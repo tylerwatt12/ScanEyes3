@@ -8,6 +8,10 @@ function charNumOnly($input){
 	// includes letters capital and lowercase else is removed
 	return preg_replace("/[^A-Za-z0-9]/", "", $input);
 }
+function numOnly($input){
+	// includes letters capital and lowercase else is removed
+	return preg_replace("/[^0-9]/", "", $input);
+}
 function charNumSymOnly($input){
 	// includes alphanumeric and underscore, else is removed
 	//MAY NOT WORK RIGHT

@@ -10,8 +10,8 @@ function rrAPIFetch($username,$password){
 		/* create SOAP client */
 		$client = new soapclient('http://api.radioreference.com/soap2/?wsdl');
 		/* craft SOAP data input */
-		$authInfo = array("appKey" => $config['rrapikey'],
-						"username" => substr($username,0,50),
+		$authInfo = array("appKey" => base64_decode($config['rrapikey']),
+						"username" => substr($username,0,20), // RR has a 20 char limit on usernames
 						"password" => substr($password,0,25),
 						"version" => "12",
 						"style" => "doc",);

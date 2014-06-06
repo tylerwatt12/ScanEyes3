@@ -30,6 +30,7 @@ function updatePwd($username,$prevPass,$newPass,$newPassConf){
 	}
 }
 function addUser($regUsername,$regPw,$regEMail,$regLastName,$regFirstName){
+	global $config;
 	//Filter E-Mail
 	//E-Mail contains invalid characters
 	$regUsername = strtolower($regUsername); //avoid duplicate DB entries like tylerwatt12 and TylerWatt12
@@ -135,10 +136,30 @@ function updateAddTGID($TGID,$newName,$tag){
 	// TGID doesn't exist
 	// newName 
 }
+/*	if ($action == "r") {
+		$statement .= "DELETE FROM TGRELATE WHERE TGID='{$TGID}'; ";
+	}elseif ($action == "m") {
+		$statement .= "UPDATE TGRELATE SET NAME='{$newTGIDS[$TGID]['NAME']}',COMMENT='Updated: {$date}',TAG='{$newTGIDS[$TGID]['CATEGORY']}' WHERE TGID='{$TGID}'; ";
+	}elseif ($action == "a") {
+		$statement .=   "INSERT INTO TGRELATE(TGID, NAME, COMMENT, TAG) VALUES ('{$TGID}', '{$newTGIDS[$TGID]['NAME']}', 'Added: {$date}', '{$newTGIDS[$TGID]['NAME']}'); ";
+	}
+*/
 function updateAddRID($RID,$newName){
 
 }
 function updateTag($tagNo,$tagName,$color){
 
+}
+function runSQLtalkgroupsDB($statement){
+	$db = new talkgroupsDB(); // Call database instance
+		$db->busyTimeout(5000);
+		$result = $db->exec($statement); // Select all the TGID INFO from the DB
+		if (@$db->lastErrorMsg() == "not an error") {
+			unset($db);
+			return "Talkgroups saved";
+		}else{
+			unset($db);
+			return "There was an error: ".$db->lastErrorMsg()."<br>";
+		}
 }
 ?>
