@@ -104,7 +104,7 @@ $db = new callsDB(); // Call database instance
 $db->busyTimeout(5000); // Create 5 years of call database tables
 for ($year=date("Y"); $year < (date("Y")+5); $year++) { 
 	$statement .= "CREATE TABLE '{$year}' ('CALLID' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 'UNIXTS' INTEGER NOT NULL  UNIQUE , 
-			'TGID' INTEGER NOT NULL , 'RID' INTEGER NOT NULL , LOCATION VARCHAR(10)); ";
+			'TGID' INTEGER NOT NULL , 'RID' INTEGER NOT NULL , LOCATION VARCHAR(10) , COMMENT VARCHAR(512)); ";
 }
 $db->exec($statement);
 unset($db);
