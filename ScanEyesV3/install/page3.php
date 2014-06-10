@@ -252,11 +252,11 @@ if (@$_POST['rrtos']) {
 				<input name="rrdbsid" type="text" placeholder="7337"><br>
 				Radioreference API Key (prefilled)
 				<input name="rrapikey" type="password" value="<?php echo $unsubmittedRRAPIKEY ?>"><br>
-				Digital voice decoder ptions for DSD/DSDPlus <a href="http://pastebin.com/4FbWtbKm">Guide</a>
+				Digital voice decoder ptions for DSD/DSDPlus <a target="_blank" href="http://pastebin.com/4FbWtbKm">Guide</a>
 				<input name="dsdoptions" type="text" value="-f1 -dr1"><br>
 				Sound extension (e.g. [.wav | .mp3])
 				<input name="sndext" type="text" value=".mp3"><br>
-				Windows Audio Device number, selects which input logrecorder will record from
+				Windows Audio Device number, selects which audio input logrecorder will record from
 				<input name="wad" type="number" value="2"><br>
 				Sample rate for recording
 				<select name="srate">
@@ -273,9 +273,9 @@ if (@$_POST['rrtos']) {
 			</fieldset>
 		</form>
 		<!-- jQuery -->
-		<script src="http://thecodeplayer.com/uploads/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+		<script src="assets/jquery-1.9.1.min.js" type="text/javascript"></script>
 		<!-- jQuery easing plugin -->
-		<script src="http://thecodeplayer.com/uploads/js/jquery.easing.min.js" type="text/javascript"></script>
+		<script src="assets/jquery.easing.min.js" type="text/javascript"></script>
 		<script language="javascript" type="text/javascript" src="assets/paginator.js"></script>
 	</body>
 </html>

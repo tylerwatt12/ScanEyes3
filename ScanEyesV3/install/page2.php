@@ -30,9 +30,12 @@ ScanEyes has the ability to pull data from Radioreference.com. By accepting the 
 
 All data provided to ScanEyes via Radioreference.com is provided "as is" without warranty of any kind express or implied, including but not limited to warranties of merchantability, fitness for a particular purpose and noninfrincement. 
 In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in action of contract, tort or otherwise arising from, out of, or in connection with the software or the use or other dealings in the software.</textarea><br>
+				<div style="text-align:left; margin-left:40px;">
 				<input type="checkbox" name="tos">  I agree to the ScanEyes license agreement<br>
 				<span><input type="checkbox" name="rrtos">  I agree to the Radioreference license agreement and acceptable use policy</span><br>
+				</div>
 				<input type="submit" name="submit" class="action-button" value="Next" />
+
 			</fieldset>
 		</form>
 		<!-- jQuery -->

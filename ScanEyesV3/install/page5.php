@@ -65,7 +65,6 @@ if (@$_FILES['xml']["tmp_name"]) {
 	}
 	$result = runSQLtalkgroupsDB($statement); // Execute import
 	unlink($_FILES['xml']["tmp_name"]); // Delete temp file
-	echo $result;
 }
 ?>
 <html>
@@ -82,6 +81,8 @@ if (@$_FILES['xml']["tmp_name"]) {
 			</ul>
 			<fieldset>
 				<h2 class="fs-title">Setup is complete, you can log in now</h2>
+				<h3 class="fs-subtitle"><?php echo @$result; ?></h3>
+				
 				<input class="action-button" type="submit" value="Home">
 			</fieldset>
 		</form>
