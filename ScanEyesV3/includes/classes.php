@@ -29,4 +29,10 @@
 	        $this->open('../database/userdb.sqlite');
 	    }
 	}
+	class playlistDB extends SQLite3{
+	    function __construct()
+	    {
+	        $this->open('../../database/playlists.sqlite'); //Done
+	    }
+	}
 ?>

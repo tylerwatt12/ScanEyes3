@@ -14,7 +14,7 @@ $timer = time(); // Start timer
 $newTGIDS = parseUTXML($_POST['xmlfile'],"talkgroups"); //re-get info from Radioreference
 
 $now = time();
-echo "Fetched from XML in ".($now-$timer)." seconds.<br>";
+growl("notice","Fetched from RRAPI in ".($now-$timer)."Fetched from XML in ".($now-$timer)." seconds.");
 
 unset($_POST['xmlfile']); //remove file from POST array
 $statement = ""; // set variable blank to avoid notice error
@@ -45,13 +45,14 @@ foreach ($_POST as $TGID => $action) { //for every talkgroup that had a checkbox
 	}
 }
 $now = time();
-echo "Compiled SQL statement in ".($now-$timer)." seconds.<br>";
+growl("notice","Compiled SQL statement in ".($now-$timer)." seconds.");
+
 
 echo runSQLtalkgroupsDB($statement)."<br>";
 
 $now = time();
-echo "Executed statement in ".($now-$timer)." seconds.<br>";
+growl("notice","Executed statement in ".($now-$timer)." seconds.");
 unlink('static/unitrunker.xml');
-echo "Added: ".$addcounter." talkgroups, Updated:".$updatecounter." talkgroups, Deleted: ".$deletecounter." talkgroups<br>";
-echo "Deleted temp file";
+growl("notice","Added: ".$addcounter." talkgroups, Updated:".$updatecounter." talkgroups, Deleted: ".$deletecounter." talkgroups");
+growl("notice","Deleted temp file");
 ?>

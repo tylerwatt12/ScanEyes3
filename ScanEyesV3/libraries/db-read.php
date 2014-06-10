@@ -19,7 +19,8 @@ function checkLogin($username,$password){
 	if (password_verify($password, $userArray['PWD'])){ // If password matches hash
 		if ($userArray['ACCTENABLED'] == 0) { // If user hasn't activated their account yet
 			sendAuthEmail($userArray['USERNAME'],$userArray['EMAIL'],$userArray['PWSALT']);
-			return "Your account is not activated yet, an email has been sent to the following address: ".htmlspecialchars($userArray['EMAIL']);
+			growl("notice","Your account is not activated yet, an email has been sent to the following address: ".htmlspecialchars($userArray['EMAIL']));
+			return;
 		}
 		$_SESSION['usrlvl'] = $userArray['USRLVL'];
 		$_SESSION['uid'] = $userArray['UID'];
@@ -29,40 +30,13 @@ function checkLogin($username,$password){
 		$_SESSION['acctenabled'] = $userArray['ACCTENABLED'];
 		$_SESSION['notes'] = $userArray['NOTES'];
 		$_SESSION['reputation'] = 5; // reset reputation
-		return "Login successful";
+		growl("notice","Login successful");
+		return;
 		//Login successful
 	}else{
 		$_SESSION['reputation']--;
-		return "bad username or password, ".$_SESSION['reputation']." tries left.";
-	}
-}
-function getTGIDs(){ // Gets all TGIDs from local database into array $locadb[TGID] = name
-	$db = new talkgroupsDB(); // Call database instance
-	$db->busyTimeout(5000);
-	$result = $db->query("SELECT * FROM TGRELATE"); // Select all the TGIDs from the DB
-	while($res = $result->fetchArray(SQLITE3_ASSOC)){ //While there are SQL returned entries,
-		if(!isset($res['TGID'])) continue;  //If there are no more values, kill loop
-		$localdb[$res['TGID']] = str_replace("\n", '',$res['NAME']); //Set array, $localdb, key TGID, value TGNAME
-	}
-	if (isset($localdb)) { //If any values returned
-		return $localdb;
-	}else{
-		return false;
-	}
-	
-}
-function getRIDs(){ // Gets all RIDs from local database into array $locadb[RID] = name
-	$db = new talkgroupsDB(); // Call database instance
-	$db->busyTimeout(5000);
-	$result = $db->query("SELECT * FROM RIDRELATE"); // Select all the TGIDs from the DB
-	while($res = $result->fetchArray(SQLITE3_ASSOC)){ //While there are SQL returned entries,
-		if(!isset($res['RID'])) continue;  //If there are no more values, kill loop
-		$localdb[$res['RID']] = str_replace("\n", '',$res['NAME']); //Set array, $localdb, key TGID, value TGNAME
-	}
-	if (isset($localdb)) { //If any values returned
-		return $localdb;
-	}else{
-		return false;
+ 		growl("warning","bad username or password, ".$_SESSION['reputation']." tries left.");
+		return;
 	}
 }
 function getTGTags(){
@@ -149,4 +123,47 @@ function getRList(){
 		@ksort($curTGID);
 		return $curTGID;
 	}
+function getSingleTGID($TGID){
+	$TGID = numOnly($TGID);
+	$db = new talkgroupsDB(); // Call database instance
+		$db->busyTimeout(5000);
+		$result = $db->query("SELECT * FROM TGRELATE WHERE TGID='{$TGID}'"); // Select all the RID INFO from the DB
+		unset($db); // unlock database
+		$res = $result->fetchArray();
+		  return array('TGID' => $res['TGID'],
+		  			     'NAME' => $res['NAME'],
+		 			     'COMMENT' => $res['COMMENT'],
+		 			     'CATEGORY' => $res['TAG']);
+}
+function getSingleRID($RID){
+	$RID = numOnly($RID);
+	$db = new talkgroupsDB(); // Call database instance
+		$db->busyTimeout(5000);
+		$result = $db->query("SELECT * FROM RIDRELATE WHERE RID='{$RID}'"); // Select all the RID INFO from the DB
+		unset($db); // unlock database
+		$res = $result->fetchArray();
+		  return array('RID' => $res['RID'],
+		  			     'NAME' => $res['NAME'],
+		 			     'COMMENT' => $res['COMMENT']);
+}
 ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -7,6 +7,8 @@ $configHandle = new configDB();
 	$config['shareenabled'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='shareenabled'")->fetchArray()['VALUE'];
 	$config['acctcreateenabled'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='acctcreateenabled'")->fetchArray()['VALUE'];
 	$config['gueststream'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='gueststream'")->fetchArray()['VALUE'];
+	$config['maxcpp'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='maxcpp'")->fetchArray()['VALUE'];
+	
 	$config['rrdbsid'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='rrdbsid'")->fetchArray()['VALUE'];
 	$config['domain'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='domain'")->fetchArray()['VALUE'];
 	$config['dsdoptions'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='dsdoptions'")->fetchArray()['VALUE'];
@@ -17,6 +19,7 @@ $configHandle = new configDB();
 	$config['httpmethod'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='httpmethod'")->fetchArray()['VALUE'];
 	$config['mintgidbrowselvl'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='mintgidbrowselvl'")->fetchArray()['VALUE'];
 	$config['mincallbrowselvl'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='mincallbrowselvl'")->fetchArray()['VALUE'];
+	$config['minguestpllvl'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='minguestpllvl'")->fetchArray()['VALUE'];
 
 	$config['gmailaddr'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='gmailaddr'")->fetchArray()['VALUE'];
 	$config['gmailpass'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='gmailpass'")->fetchArray()['VALUE'];

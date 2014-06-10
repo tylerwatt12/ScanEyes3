@@ -41,11 +41,11 @@ $radioids = getRList();
 	<center><h1>System View</h1></center>
 	<a target="_blank" href="http://www.radioreference.com/apps/db/?sid=<?php echo $config['rrdbsid']; ?>">Radioreference Link</a>
 </div>
-<div class="col-lg-6">
+<div class="col-lg-8">
 	<h1>Talkgroups</h1>
 	
 
-	<table border="1" width="100%">
+	<table id="talkgroups" width="100%">
 		<thead>
 			<tr>
 				<th>DEC</th>
@@ -59,7 +59,10 @@ $radioids = getRList();
 			foreach ($talkgroups as $TGID => $infoArray) {
 				echo"<tr>
 						<td>{$TGID}</td>
-						<td>{$infoArray['NAME']}</td>
+						<td>";
+						if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=edittgid&TGID={$TGID}'><img src='static/icons/modify.png'> </a>";}
+						echo $infoArray['NAME'];
+						echo "</td>
 						<td title='{$infoArray['COMMENT']}' bgcolor='{$tagIDs[$infoArray['CATEGORY']]['COLOR']}'>{$tagIDs[$infoArray['CATEGORY']]['TAG']}</td>
 					</tr>";
 			}
@@ -67,9 +70,9 @@ $radioids = getRList();
 		</tbody>
 	</table>
 </div>
-<div class="col-lg-6">
+<div class="col-lg-4">
 	<h1>Radios</h1>
-	<table border="1" width="100%">
+	<table id="radioids" width="100%">
 		<thead>
 			<tr>
 				<th>DEC</th>
@@ -81,7 +84,9 @@ $radioids = getRList();
 			foreach ($radioids as $RID => $infoArray) {
 				echo"<tr>
 						<td>{$RID}</td>
-						<td title='{$infoArray['COMMENT']}'>{$infoArray['NAME']}</td>
+						<td title='{$infoArray['COMMENT']}'>";
+				if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=editrid&RID={$RID}'><img src='static/icons/modify.png'> </a>";}
+				echo "{$infoArray['NAME']}</td>
 					</tr>";
 			}
 		?>

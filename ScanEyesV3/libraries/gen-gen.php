@@ -36,7 +36,7 @@ function sendAuthEmail($regUname,$regEMail,$regPwSalt){
 	if ($result == "success") {
 		return "an email has been sent to ".$regEMail." with your activation code.";
 	}else{
-		return "There was an internal E-Mail error";
+		return false;
 	}
 }
 function rrmdir($dir) {
@@ -50,5 +50,33 @@ function rrmdir($dir) {
      reset($objects);
      rmdir($dir);
    }
+ }
+ function growl($title,$message){
+ 	/*
+	Supported Datatypes
+	growl("warning","you best check yo-self")
+	growl("notice","Turn down for what?")
+	growl("error","Ion distribution chamber init failed")
+	growl("randomtitle","just a regular message")
+	
+ 	*/
+ 	if ($title == "warning") {
+ 		echo"<script type='text/javascript'>
+				$.growl.warning({ message: '{$message}' });
+			</script>";
+ 	}elseif ($title == "notice") {
+ 		echo"<script type='text/javascript'>
+				$.growl.notice({ message: '{$message}' });
+			</script>";
+ 	}elseif ($title == "error") {
+ 		echo"<script type='text/javascript'>
+				$.growl.error({ message: '{$message}' });
+			</script>";	  
+ 	}else{
+ 		echo"<script type='text/javascript'>
+			  $.growl({ title: '{$title}', message: '{$message}' });
+			</script>";
+ 	}
+ 	
  }
 ?>

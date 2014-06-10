@@ -14,7 +14,7 @@ RR premium account needed
 */
 secReq(3); // Users 3+ can use this page
 if (@!$config['rrdbsid']) {
-	echo "rrdbsid is not set.";
+	growl("warning","rrdbsid is not set.");
 }
 if (@!$_POST['rrdbUsername'] && @!$_POST['rrdbPassword']) { // If there was
 	include('admin/UI/RRlogin.php'); // include login form
@@ -24,7 +24,7 @@ $startTime = time(); // Start timer
 
 $newTGID = rrAPIFetch($_POST['rrdbUsername'],$_POST['rrdbPassword']); // Get data from radioreference
 if ($newTGID == false) { // If data get failed
-	echo "bad username, password or API key.";
+	growl("warning","bad username, password or API key");
 	exit();
 }
 $curTGID = getTGList(); // Get data from local DB

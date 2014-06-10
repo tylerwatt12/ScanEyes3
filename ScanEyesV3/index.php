@@ -14,7 +14,8 @@ include 'libraries/gen-sec.php';
 include 'libraries/gen-gen.php';
 
 if (is_dir('install') && is_file('../database/config.sqlite') == TRUE) {
-	rrmdir('install'); // If database exists, but install dir also exists, remove install dir
+	growl("notice","install directory was found and removed");
+	#rrmdir('install'); // If database exists, but install dir also exists, remove install dir
 }
 
 echo "usrlvl: ".$_SESSION['usrlvl']." rep:".$_SESSION['reputation']."<br>"; //debug
@@ -59,6 +60,15 @@ if ($page == "home") {
 
 }elseif ($page == "viewsystem") {
 	include 'gen/viewsystem.php';
+
+}elseif ($page == "edittgid") {
+	include 'admin/backend/edittgid.php';
+
+}elseif ($page == "editrid") {
+	include 'admin/backend/editrid.php';
+
+}elseif ($page == "editcategory") {
+	include 'admin/backend/editcategory.php';
 
 }elseif ($page == "logoff") {
 	include 'gen/logoff.php';

@@ -41,30 +41,36 @@ function addUser($regUsername,$regPw,$regEMail,$regLastName,$regFirstName){
 	}
 	//E-Mail is too long
 	if (strlen($regEMail) > 64) {
-		return "Bad E-Mail length, 64 characters maximum.";
+		growl("error","Bad E-Mail length, 64 characters maximum.");
+		return;
 	}
 	//Filter Username+pw
 		//Username contains invalid characters
 		if ($regUsername !== preg_replace("/[^a-zA-Z0-9]+/", "", $regUsername)) {
-			return "Bad Username characters, use only A-z,0-9 (non case sensitive)";
+			growl("error","Bad Username characters, use only A-z,0-9 (non case sensitive)");
+			return;
 		}
 		//Username is too long
 		if (strlen($regUsername) > 32 || strlen($regUsername) < 3) {
-			return "Bad Username length, 3-32 chars.";
+			growl("error","Bad Username length, 3-32 chars.");
+			return;
 		}
 		//Password too short/long
 		if (strlen($regPw) < 5 || strlen($regPw) > 128) {
-			return "Bad password length, 5-128 characters";
+			growl("error","Bad password length, 5-128 characters");
+			return;
 		}
 	//name validation
 		//name contains bad characters
 		if ($regFirstName !== preg_replace("/[^A-Za-z]/",'',$regFirstName) || 
 			$regLastName !== preg_replace("/[^A-Za-z]/",'',$regLastName)) {
-			return "Bad Name characters, allowed are A-z.";
+			growl("error", "Bad Name characters, allowed are A-z.");
+			return;
 		}
 		//Name is too long
 		if (strlen($regFirstName) > 32 || strlen($regLastName) > 32) {
-			return "Bad name length, 32 characters maximum.";
+			growl("error","Bad name length, 32 characters maximum.");
+			return;
 		}
 	$regUsername = SQLite3::escapeString($regUsername); // Sanitize for SQL in case
 	$regEMail = SQLite3::escapeString( $regEMail ); // Sanitize for SQL in case
@@ -78,26 +84,29 @@ function addUser($regUsername,$regPw,$regEMail,$regLastName,$regFirstName){
 	$query = $db->exec("INSERT INTO USERS (USERNAME,PWD,AUTHCODE,EMAIL,LN,FN,ACCTENABLED,USRLVL,NOTES) 
 		VALUES ('{$regUsername}','{$regShashedPwd}','{$regAuthCode}','{$regEMail}','{$regLastName}','{$regFirstName}','0','1','')");
 	//HANDLE ERROR
-	if ($db->lastErrorMsg() == "column USERNAME is not unique") {
-		return "Username exists, Did you forget your password? [password reset link]";
-	}
-	if ($db->lastErrorMsg() == "column EMAIL is not unique") {
-		return "E-Mail exists, Did you forget your password? [password reset link]";
+	if (strpos($db->lastErrorMsg(), "not unique") !== false) {
+		growl("error", "Username exists, Did you forget your password? [password reset link]");
+		return;
 	}
 	if ($db->lastErrorMsg() !== "not an error") {
 		// other uncaught error
-		return "There was an unknown error.".$db->lastErrorMsg();
+		growl("error", "There was an unknown error.".$db->lastErrorMsg());
+		return;
 	}
-	sendAuthEmail($regUsername,$regEMail,$regAuthCode); //email user with auth code
-	return "Account created, check your email for a verification code, enter it <a href=\"".$config['httpmethod'].$config['domain']."/?page=auth\">here</a>";
+	if(sendAuthEmail($regUsername,$regEMail,$regAuthCode) == false){
+		growl("error", "There was an internal E-Mail error");
+		return;
+	}else{
+		growl("notice","Account created, check your email for a verification code, enter it <a href=\"".$config['httpmethod'].$config['domain']."/?page=auth\">here</a>");
+		return;
+	}
 }
 
 function verifyUser($username,$authCode){
 	// This function is called when a user opens the checkreg page to enable their account and begin streaming.
 	// They must enter their password salt as the auth code, then the DB is written that enables their account.
 	global $config;
-	$username = charNumOnly($username); // Sanitize it
-	$username = SQLite3::escapeString($username);
+	$username = SQLite3::escapeString(charNumOnly($username));
 	$db = new userDB();
 	$db->busyTimeout(5000);
 	$result = $db->query("SELECT * FROM USERS WHERE USERNAME='{$username}' COLLATE NOCASE"); //Get user info
@@ -107,32 +116,42 @@ function verifyUser($username,$authCode){
 		if($authCode == $userArray['AUTHCODE']){
 			$db->exec("UPDATE USERS SET ACCTENABLED=1 WHERE USERNAME='{$username}'"); //Enable users account
 			if (@$db->lastErrorMsg() !== "not an error") {
-				return "There was an error";
+				growl("error", "There was an error");
+				return;
 			}
 			$_SESSION['reputation'] = 5;
-			return "Your account has been verified, you may log in now";
+			growl("notice", "Your account has been verified, you may log in now");
+			return;
 		}else{
-			sendAuthEmail($userArray['USERNAME'],$userArray['EMAIL'],$userArray['AUTHCODE']); //re-email user with auth code
-			return "Incorrect validation code, a code has been resent to your email";
+			if(sendAuthEmail($userArray['USERNAME'],$userArray['EMAIL'],$userArray['AUTHCODE']) == false){
+				growl("error", "There was an internal E-Mail error");
+				return;
+			}else{
+				growl("error", "Incorrect validation code, a code has been resent to your email, enter it <a href=\"".$config['httpmethod'].$config['domain']."/?page=auth\">here</a>");
+				return;
+
+			}
 		}
 	}else{
-		return "Your account is already verified, you may <a href=\"".$config['httpmethod'].$config['domain']."/?page=login\">log in</a>";
+		growl("notice", "Your account is already verified, you may <a href=\"".$config['httpmethod'].$config['domain']."/?page=login\">log in</a>");
+		return;
 	}
 }
 function saveNotes($username,$notes){
 	$notes = SQLite3::escapeString($notes);
-	$username = charNumOnly($username); // Clean username
 	$username = SQLite3::escapeString($username);
 	$db = new userDB();
 	$db->busyTimeout(5000);
 	$db->exec("UPDATE USERS SET NOTES='{$notes}' WHERE USERNAME='{$username}'"); //Enable users account
 	if (@$db->lastErrorMsg() !== "not an error") {
-		return "There was an error notes could not be saved";
+		growl("error","There was an error notes could not be saved");
+		return;
 	}else{
-		return "Notes saved successfully";
+		growl("notice","Notes saved successfully");
+		return;
 	}
 }
-function updateAddTGID($TGID,$newName,$tag){
+function placeholderdeleteme($TGID,$newName,$tag){
 	// TGID doesn't exist
 	// newName 
 }
@@ -144,11 +163,60 @@ function updateAddTGID($TGID,$newName,$tag){
 		$statement .=   "INSERT INTO TGRELATE(TGID, NAME, COMMENT, TAG) VALUES ('{$TGID}', '{$newTGIDS[$TGID]['NAME']}', 'Added: {$date}', '{$newTGIDS[$TGID]['NAME']}'); ";
 	}
 */
-function updateAddRID($RID,$newName){
-
+function addSingleTGID($TGID,$newName,$tag,$comment){
+	$date = date('Y-m-d');
+	$TGID = numOnly($TGID);
+	$db = new talkgroupsDB(); // Call database instance
+		$db->busyTimeout(5000);
+		$result = $db->exec("UPDATE TGRELATE SET NAME='{$newName}',COMMENT='Updated: {$date}, {$comment}',TAG='{$tag}' WHERE TGID='{$TGID}'; ");
+		unset($db); // unlock database
 }
-function updateTag($tagNo,$tagName,$color){
+function addSingleRID($RID,$newName,$comment){
+	$date = date('Y-m-d');
+	$RID = SQLite3::escapeString(numOnly($RID));
+	$newName = SQLite3::escapeString(substr($newName,0,128));
+	$comment = SQLite3::escapeString(substr($comment,0,64));
+	$db = new talkgroupsDB(); // Call database instance
+		$db->busyTimeout(5000);
+		$result = $db->exec("UPDATE RIDRELATE SET NAME='{$newName}',COMMENT='Updated: {$date}, {$comment}' WHERE RID='{$RID}'; ");
+		unset($db); // unlock database
+}
+function addSingleCategory($tag,$newCategory,$newColor){
+	$tag = SQLite3::escapeString(numOnly(substr($tag,0,3)));
+	$newCategory = SQLite3::escapeString(substr($newCategory,0,64));
+	$newColor = SQLite3::escapeString(substr($newColor,0,7));
+	$db = new talkgroupsDB(); // Call database instance
+	$db->busyTimeout(5000);
+	$db->exec("UPDATE TAG SET TAG='{$newCategory}',COLOR='{$newColor}' WHERE ID='{$tag}'; "); 
+	unset($db); // unlock database
+}
 
+function writeSingleTGID($TGID,$newName,$tag,$comment){
+	$date = date('Y-m-d');
+	$TGID = numOnly($TGID);
+	$db = new talkgroupsDB(); // Call database instance
+		$db->busyTimeout(5000);
+		$result = $db->exec("UPDATE TGRELATE SET NAME='{$newName}',COMMENT='Updated: {$date}, {$comment}',TAG='{$tag}' WHERE TGID='{$TGID}'; ");
+		unset($db); // unlock database
+}
+function writeSingleRID($RID,$newName,$comment){
+	$date = date('Y-m-d');
+	$RID = SQLite3::escapeString(numOnly($RID));
+	$newName = SQLite3::escapeString(substr($newName,0,128));
+	$comment = SQLite3::escapeString(substr($comment,0,64));
+	$db = new talkgroupsDB(); // Call database instance
+		$db->busyTimeout(5000);
+		$result = $db->exec("UPDATE RIDRELATE SET NAME='{$newName}',COMMENT='Updated: {$date}, {$comment}' WHERE RID='{$RID}'; ");
+		unset($db); // unlock database
+}
+function writeSingleCategory($tag,$newCategory,$newColor){
+	$tag = SQLite3::escapeString(numOnly(substr($tag,0,3)));
+	$newCategory = SQLite3::escapeString(substr($newCategory,0,64));
+	$newColor = SQLite3::escapeString(substr($newColor,0,7));
+	$db = new talkgroupsDB(); // Call database instance
+	$db->busyTimeout(5000);
+	$db->exec("UPDATE TAG SET TAG='{$newCategory}',COLOR='{$newColor}' WHERE ID='{$tag}'; "); 
+	unset($db); // unlock database
 }
 function runSQLtalkgroupsDB($statement){
 	$db = new talkgroupsDB(); // Call database instance
@@ -156,10 +224,12 @@ function runSQLtalkgroupsDB($statement){
 		$result = $db->exec($statement); // Select all the TGID INFO from the DB
 		if (@$db->lastErrorMsg() == "not an error") {
 			unset($db);
-			return "Talkgroups saved";
+			growl("notice","Talkgroups saved");
+			return;
 		}else{
 			unset($db);
-			return "There was an error: ".$db->lastErrorMsg()."<br>";
+			growl("error","There was an error: ".$db->lastErrorMsg());
+			return;
 		}
 }
 ?>

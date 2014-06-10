@@ -14,7 +14,7 @@ $timer = time(); // Start timer
 $newTGIDS = rrAPIFetch($_POST['rrdbUsername'],$_POST['rrdbPassword']); //re-get info from Radioreference
 
 $now = time();
-echo "Fetched from RRAPI in ".($now-$timer)." seconds.<br>";
+growl("notice","Fetched from RRAPI in ".($now-$timer)." seconds.");
 
 unset($_POST['rrdbUsername']); //remove username and password from POST array
 unset($_POST['rrdbPassword']);
@@ -38,12 +38,10 @@ foreach ($_POST as $TGID => $action) { //for every talkgroup that had a checkbox
 	}
 }
 $now = time();
-echo "Compiled SQL statement in ".($now-$timer)." seconds.<br>";
+growl("notice","Fetched from RRAPI in ".($now-$timer)."Compiled SQL statement in ".($now-$timer)." seconds.");
 
 echo runSQLtalkgroupsDB($statement);
 
 $now = time();
-echo "Executed statement in ".($now-$timer)." seconds.<br>";
-#run statement
-#include HTML output
+growl("notice","Executed statement in ".($now-$timer)." seconds.");
 ?>

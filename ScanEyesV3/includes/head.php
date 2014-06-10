@@ -8,6 +8,7 @@
 <head>
 	<title>ScanEyes 3.0 Beta</title>
 	<link rel="stylesheet" type="text/css" href="styles/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="styles/jquery.growl.css">
 
 	<?php // Scripts built in for faster execution
 	if ($page == "importrrtgid" || $page == "importuttgid") {
@@ -25,7 +26,7 @@
 		}
 	?>
 <?php #if UACode
-	if(empty($config['uacode']) == false){ ?>
+	if($config['gaenabled'] == "yes"){ ?>
 		<script>
 		  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 		  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -37,4 +38,8 @@
 		</script>
 		
 <?php } ?>
+	<script src="https://code.jquery.com/jquery-2.1.1.min.js" type="text/javascript"></script>
+	<script src="scripts/jquery.growl.js" type="text/javascript"></script>
+
 </head>
+<body>
