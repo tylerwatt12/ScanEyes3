@@ -9,12 +9,14 @@ if (!$_POST) {
 	@unlink('../../database/log.sqlite');
 	@unlink('../../database/talkgroups.sqlite');
 	@unlink('../../database/userdb.sqlite');
+	@unlink('../../database/playlists.sqlite');
 //Create databases
 	touch('../../database/calls.sqlite');
 	touch('../../database/config.sqlite');
 	touch('../../database/log.sqlite');
 	touch('../../database/talkgroups.sqlite');
 	touch('../../database/userdb.sqlite');
+	touch('../../database/playlists.sqlite');
 // Define database classes
 	class callsDB extends SQLite3{
 	    function __construct()
@@ -46,6 +48,12 @@ if (!$_POST) {
 	        $this->open('../../database/userdb.sqlite'); //Done
 	    }
 	}
+	class playlistDB extends SQLite3{
+	    function __construct()
+	    {
+	        $this->open('../../database/playlists.sqlite'); //Done
+	    }
+	}
 #########################################################################
 ///////////		CONFIGURE CONFIG DATABASE 					/////////////
 #########################################################################
@@ -58,6 +66,8 @@ $db->exec("CREATE TABLE 'SETTINGS' ('SETTING' VARCHAR NOT NULL , 'VALUE' VARCHAR
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('shareenabled', '{$_POST['shareenabled']}', 'Is sharing enabled [yes/no]');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('acctcreateenabled', '{$_POST['acctcreateenabled']}', 'Users allowed to create accounts [yes/no]');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('gueststream', '{$_POST['gueststream']}', 'Can guests stream [yes/no]');
+			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('minguestpllvl', '{$_POST['minguestpllvl']}', 'Minimum user level to make playlists [1-4]');
+			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('maxcpp', '{$_POST['maxcpp']}', 'Maximum calls per playlist [1-1024]');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('rrdbsid', '{$_POST['rrdbsid']}', 'RadioReference Database SID');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('domain', '{$_POST['domain']}', 'servers FQDN');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('dsdoptions', '{$_POST['dsdoptions']}', 'Options for P25 decoding');
@@ -158,16 +168,33 @@ $db->busyTimeout(5000); // Create tables for event log
 $db->exec("CREATE TABLE 'LOG' ('TIMESTAMP' varchar(13) DEFAULT (null) ,'TYPE' varchar(5),'IP' varchar(15),'USER' varchar(16),'COMMENT' varchar(128));
 			INSERT INTO LOG (TIMESTAMP, TYPE, IP, USER, COMMENT) VALUES ('{$time}','INSTL','LOCALHOST','ADMIN','SCANEYES WAS INSTALLED')");
 unset($db);
+#########################################################################
+/////////////		CONFIGURE PLAYLIST DATABASE 			/////////////
+#########################################################################
+$db = new playlistDB(); // Call database instance
+$db->busyTimeout(5000); // Create tables for playlist log
+$db->exec("CREATE TABLE PLAYLIST (PID INTEGER NOT NULL, UID INTEGER, CALLS VARCHAR NOT NULL, COMMENT VARCHAR(300), PRIMARY KEY (PID))");
+unset($db);
 
 ?>
-<form action="index.php?step=5" method="POST" enctype="multipart/form-data">
-
-If you want you can import existing data from Unitrunker, see how <a href="assets/utexport.mp4">here</a>.
-<ul>
-	<li>Export XML from Unitrunker</li>
-	<li>Drag into file box below</li>
-	<li>Wait up to 120 seconds for import to finish</li>
-</ul>
-<input type="file" name="xml" size="50" />
-	<input type="submit" value="Next">
-</form>
+<html>
+	<head>
+		<title>ScanEyes Install Step 4/5</title>
+		<link rel="stylesheet" type="text/css" href="assets/style4.css">
+	</head>
+	<body>
+		<form action="index.php?step=5" id="msform" method="POST" enctype="multipart/form-data">
+			<ul id="progressbar">
+					<li class="active">Import data from unitrunker</li>
+			</ul>
+			<fieldset>
+				<h2 class="fs-title">ScanEyes Setup Page 4/5</h2>
+				<h3 class="fs-subtitle">Unitrunker importing is optional.</h3>
+				<video controls autoplay loop width="980px"><source src="assets/utexport.mp4" type="video/mp4"></video>
+				<br>
+					<center><b>Export XML from Unitrunker | Drag file into box | Wait 5 minutes</b></center>
+				<br>
+				<input type="file" name="xml" size="50" />
+					<input class="action-button" type="submit" value="Next">
+			</fieldset>
+		</form>

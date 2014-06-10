@@ -1,5 +1,5 @@
 <?php
-	set_time_limit(120);
+	set_time_limit(300);
 	function parseUTXML($filename,$type){
 		################################################
 		################################################
@@ -50,7 +50,7 @@
 #########################################################################
 /////////////			IMPORT TALKGROUPS DATABASE 			/////////////
 #########################################################################
-if (@$_FILES['xml']) {
+if (@$_FILES['xml']["tmp_name"]) {
 	$talkgroups = parseUTXML($_FILES['xml']["tmp_name"],"talkgroups"); //parse xml
 	$radioIDS = parseUTXML($_FILES['xml']["tmp_name"],"radioids"); //parse xml
 
@@ -68,4 +68,22 @@ if (@$_FILES['xml']) {
 	echo $result;
 }
 ?>
-<br><b>You may now proceed to <a href="../index.php">log in</a></b>
+<html>
+	<head>
+		<title>ScanEyes Install Step 5/5</title>
+		<link rel="stylesheet" type="text/css" href="assets/style5.css">
+	</head>
+	<body>
+		
+
+		<form id="msform" action="../index.php">
+			<ul id="progressbar">
+				<li class="active">Install Finished</li>
+			</ul>
+			<fieldset>
+				<h2 class="fs-title">Setup is complete, you can log in now</h2>
+				<input class="action-button" type="submit" value="Home">
+			</fieldset>
+		</form>
+	</body>
+</html>
