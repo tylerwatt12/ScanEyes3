@@ -237,6 +237,8 @@ if (@$_POST['rrtos']) {
 				<input name="mincallbrowselvl" type="number" min="1" max="4" value="1"><br>
 				Maximum calls per playlist
 				<input name="maxcpp" type="number" min="1" max="1024" value="200" title="Max:1024"><br>
+				Maximum days queryable (higher = slower)
+				<input name="maxdq" type="number" min="1" max="9999" value="120" title="Showing more results, makes database reads slower for other people"><br>
 				<input type="button" name="previous" class="previous action-button" value="Previous" />
 				<input type="button" name="next" class="next action-button" value="Next" />
 			</fieldset>

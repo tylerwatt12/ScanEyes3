@@ -68,6 +68,7 @@ $db->exec("CREATE TABLE 'SETTINGS' ('SETTING' VARCHAR NOT NULL , 'VALUE' VARCHAR
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('gueststream', '{$_POST['gueststream']}', 'Can guests stream [yes/no]');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('minguestpllvl', '{$_POST['minguestpllvl']}', 'Minimum user level to make playlists [1-4]');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('maxcpp', '{$_POST['maxcpp']}', 'Maximum calls per playlist [1-1024]');
+			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('maxdq', '{$_POST['maxdq']}', 'Maximum days for query');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('rrdbsid', '{$_POST['rrdbsid']}', 'RadioReference Database SID');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('domain', '{$_POST['domain']}', 'servers FQDN');
 			INSERT INTO SETTINGS(SETTING, VALUE, COMMENT) VALUES ('dsdoptions', '{$_POST['dsdoptions']}', 'Options for P25 decoding');
@@ -91,7 +92,7 @@ unset($db);
 /////////////			CONFIGURE ADMIN USER 				/////////////
 #########################################################################
 $username = strtolower($_POST['adminusername']);
-$password = password_hash($_POST['adminpassword'], PASSWORD_BCRYPT);	// hash password
+$password = password_hash($_POST['adminpassword'], PASSWORD_BCRYPT); // hash password
 
 $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'; // email authcode
 for ($i = 0; $i < "32"; $i++) {
@@ -109,15 +110,7 @@ unset($db);
 #########################################################################
 /////////////		CONFIGURE CALLS DATABASE 				/////////////
 #########################################################################
-$statement = "";
-$db = new callsDB(); // Call database instance
-$db->busyTimeout(5000); // Create 5 years of call database tables
-for ($year=date("Y"); $year < (date("Y")+5); $year++) { 
-	$statement .= "CREATE TABLE '{$year}' ('CALLID' INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , 'UNIXTS' INTEGER NOT NULL  UNIQUE , 
-			'TGID' INTEGER NOT NULL , 'RID' INTEGER NOT NULL , LOCATION VARCHAR(10) , COMMENT VARCHAR(512)); ";
-}
-$db->exec($statement);
-unset($db);
+#Deprecated, LogRecorder will do this at first launch 
 #########################################################################
 /////////////		CONFIGURE TALKGROUPS DATABASE 			/////////////
 #########################################################################

@@ -1,6 +1,13 @@
 <?php
 $configHandle = new configDB();
 	//All config options are handled through the database.
+							// REPLACE THIS WITH A FOREACH LOOP IN FUTURE
+		/*
+		SELECT VALUE,SETTING FROM SETTINGS
+		foreach ($settings as $setting => $value) {
+			$config[$setting] = $value;
+		}
+		*/
 	date_default_timezone_set($configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='date_default_timezone_set'")->fetchArray()['VALUE']);
 	$config['uacode'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='uacode'")->fetchArray()['VALUE'];
 	$config['gaenabled'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='gaenabled'")->fetchArray()['VALUE'];
@@ -8,6 +15,7 @@ $configHandle = new configDB();
 	$config['acctcreateenabled'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='acctcreateenabled'")->fetchArray()['VALUE'];
 	$config['gueststream'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='gueststream'")->fetchArray()['VALUE'];
 	$config['maxcpp'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='maxcpp'")->fetchArray()['VALUE'];
+	$config['maxdq'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='maxdq'")->fetchArray()['VALUE'];
 	
 	$config['rrdbsid'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='rrdbsid'")->fetchArray()['VALUE'];
 	$config['domain'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='domain'")->fetchArray()['VALUE'];

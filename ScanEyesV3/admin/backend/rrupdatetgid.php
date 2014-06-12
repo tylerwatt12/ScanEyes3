@@ -4,6 +4,8 @@ include 'libraries/db-read.php';
 include 'libraries/spec-radioreference.php';
 if (basename($_SERVER['SCRIPT_FILENAME']) == basename($_SERVER['REQUEST_URI'])){
 	exit();
+}elseif (@!$_POST['rrdbUsername'] || @!$_POST['rrdbPassword']) {
+	exit();
 }
 /*
 This is the processing page that updates the talkgroup info from importrr.php

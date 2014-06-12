@@ -146,7 +146,7 @@ function saveNotes($username,$notes){
 	if (@$db->lastErrorMsg() !== "not an error") {
 		growl("error","There was an error notes could not be saved");
 		return;
-	}else{
+	}elseif(@$db->lastErrorMsg() == "not an error"){
 		growl("notice","Notes saved successfully");
 		return;
 	}
@@ -164,31 +164,56 @@ function placeholderdeleteme($TGID,$newName,$tag){
 	}
 */
 function addSingleTGID($TGID,$newName,$tag,$comment){
+	$TGID = SQLite3::escapeString(numOnly(substr($TGID,0,5)));
+	$newName = SQLite3::escapeString(substr($newName,0,64));
+	$tag = SQLite3::escapeString(numOnly(substr($tag,0,3)));
+	$comment = SQLite3::escapeString(substr($comment,0,256));
 	$date = date('Y-m-d');
-	$TGID = numOnly($TGID);
 	$db = new talkgroupsDB(); // Call database instance
-		$db->busyTimeout(5000);
-		$result = $db->exec("UPDATE TGRELATE SET NAME='{$newName}',COMMENT='Updated: {$date}, {$comment}',TAG='{$tag}' WHERE TGID='{$TGID}'; ");
-		unset($db); // unlock database
+	$db->busyTimeout(5000);
+	$result = $db->exec("INSERT INTO TGRELATE(TGID, NAME, COMMENT, TAG) VALUES ('{$TGID}', '{$newName}', 'Added: {$date}, {$comment}', '{$tag}'); ");
+	if (@$db->lastErrorMsg() !== "not an error") {
+		growl("error","There was an error, Talkgroup could not be added");
+		return;
+	}elseif(@$db->lastErrorMsg() == "not an error"){
+		growl("notice","Talkgroup saved successfully");
+		return;
+	}
 }
 function addSingleRID($RID,$newName,$comment){
+	$RID = SQLite3::escapeString(numOnly(substr($RID,0,10)));
+	$newName = SQLite3::escapeString(substr($newName,0,64));
+	$comment = SQLite3::escapeString(substr($comment,0,256));
 	$date = date('Y-m-d');
-	$RID = SQLite3::escapeString(numOnly($RID));
-	$newName = SQLite3::escapeString(substr($newName,0,128));
-	$comment = SQLite3::escapeString(substr($comment,0,64));
 	$db = new talkgroupsDB(); // Call database instance
-		$db->busyTimeout(5000);
-		$result = $db->exec("UPDATE RIDRELATE SET NAME='{$newName}',COMMENT='Updated: {$date}, {$comment}' WHERE RID='{$RID}'; ");
-		unset($db); // unlock database
+	$db->busyTimeout(5000);
+	$result = $db->exec("INSERT INTO RIDRELATE(RID, NAME, COMMENT) VALUES ('{$RID}', '{$newName}', 'Added: {$date}, {$comment}'); ");
+	if (@$db->lastErrorMsg() !== "not an error") {
+		growl("error","There was an error, RID could not be added");
+		return;
+	}elseif(@$db->lastErrorMsg() == "not an error"){
+		growl("notice","RID saved successfully");
+		return;
+	}
 }
-function addSingleCategory($tag,$newCategory,$newColor){
-	$tag = SQLite3::escapeString(numOnly(substr($tag,0,3)));
+function addSingleCategory($id,$newCategory,$newColor){
 	$newCategory = SQLite3::escapeString(substr($newCategory,0,64));
 	$newColor = SQLite3::escapeString(substr($newColor,0,7));
 	$db = new talkgroupsDB(); // Call database instance
 	$db->busyTimeout(5000);
-	$db->exec("UPDATE TAG SET TAG='{$newCategory}',COLOR='{$newColor}' WHERE ID='{$tag}'; "); 
-	unset($db); // unlock database
+	if ($id == "none") {
+		$statement = "INSERT INTO TAG(TAG,COLOR) VALUES('{$newCategory}', '{$newColor}'); ";
+	}else{
+		$statement = "INSERT INTO TAG(ID,TAG,COLOR) VALUES('{$id}','{$newCategory}', '{$newColor}'); ";
+	}
+	$db->exec($statement);
+	if (@$db->lastErrorMsg() !== "not an error") {
+		growl("error","There was an error, category could not be added");
+		return;
+	}elseif(@$db->lastErrorMsg() == "not an error"){
+		growl("notice","category saved successfully");
+		return;
+	}
 }
 
 function writeSingleTGID($TGID,$newName,$tag,$comment){
@@ -197,7 +222,6 @@ function writeSingleTGID($TGID,$newName,$tag,$comment){
 	$db = new talkgroupsDB(); // Call database instance
 		$db->busyTimeout(5000);
 		$result = $db->exec("UPDATE TGRELATE SET NAME='{$newName}',COMMENT='Updated: {$date}, {$comment}',TAG='{$tag}' WHERE TGID='{$TGID}'; ");
-		unset($db); // unlock database
 }
 function writeSingleRID($RID,$newName,$comment){
 	$date = date('Y-m-d');
@@ -207,7 +231,6 @@ function writeSingleRID($RID,$newName,$comment){
 	$db = new talkgroupsDB(); // Call database instance
 		$db->busyTimeout(5000);
 		$result = $db->exec("UPDATE RIDRELATE SET NAME='{$newName}',COMMENT='Updated: {$date}, {$comment}' WHERE RID='{$RID}'; ");
-		unset($db); // unlock database
 }
 function writeSingleCategory($tag,$newCategory,$newColor){
 	$tag = SQLite3::escapeString(numOnly(substr($tag,0,3)));
@@ -216,7 +239,58 @@ function writeSingleCategory($tag,$newCategory,$newColor){
 	$db = new talkgroupsDB(); // Call database instance
 	$db->busyTimeout(5000);
 	$db->exec("UPDATE TAG SET TAG='{$newCategory}',COLOR='{$newColor}' WHERE ID='{$tag}'; "); 
-	unset($db); // unlock database
+}
+function delTGID($TGIDs){
+	$statement = "";
+	foreach ($TGIDs as $TGID) {
+		$TGID = SQLite3::escapeString(numOnly(substr($TGID,0,10)));
+		$statement .= "DELETE FROM TGRELATE WHERE TGID = {$TGID}; ";
+	}
+	$db = new talkgroupsDB(); // Call database instance
+	$db->busyTimeout(5000);
+	$result = $db->exec($statement);
+	if (@$db->lastErrorMsg() !== "not an error") {
+		growl("error","There was an error, Talkgroup could not be deleted");
+		return;
+	}elseif(@$db->lastErrorMsg() == "not an error"){
+		growl("notice","Talkgroup deleted successfully");
+		return;
+	}
+}
+function delRID($RIDs){
+	$statement = "";
+	foreach ($RIDs as $RID) {
+		$RID = SQLite3::escapeString(numOnly(substr($RID,0,10)));
+		$statement .= "DELETE FROM RIDRELATE WHERE RID = {$RID}; ";
+	}
+	$db = new talkgroupsDB(); // Call database instance
+	$db->busyTimeout(5000);
+	$result = $db->exec($statement);
+	if (@$db->lastErrorMsg() !== "not an error") {
+		growl("error","There was an error, RID could not be deleted");
+		return;
+	}elseif(@$db->lastErrorMsg() == "not an error"){
+		growl("notice","RID deleted successfully");
+		return;
+	}
+}
+function delCategory($categories){
+	$statement = "";
+	foreach ($categories as $category) {
+		$category = SQLite3::escapeString(numOnly(substr($category,0,5)));
+		$statement .= "DELETE FROM TAG WHERE ID = {$category}; ";
+	}
+	$category = SQLite3::escapeString(substr($category,0,64));
+	$db = new talkgroupsDB(); // Call database instance
+	$db->busyTimeout(5000);
+	$db->exec("DELETE FROM TAG WHERE ID = {$category} ");
+	if (@$db->lastErrorMsg() !== "not an error") {
+		growl("error","There was an error, category could not be deleted");
+		return;
+	}elseif(@$db->lastErrorMsg() == "not an error"){
+		growl("notice","category deleted successfully");
+		return;
+	}
 }
 function runSQLtalkgroupsDB($statement){
 	$db = new talkgroupsDB(); // Call database instance

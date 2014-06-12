@@ -14,7 +14,7 @@ include 'libraries/gen-sec.php';
 include 'libraries/gen-gen.php';
 
 if (is_dir('install') && is_file('../database/config.sqlite') == TRUE) {
-	growl("notice","install directory was found and removed");
+	#growl("notice","install directory was found and removed");
 	#rrmdir('install'); // If database exists, but install dir also exists, remove install dir
 }
 
@@ -69,6 +69,24 @@ if ($page == "home") {
 
 }elseif ($page == "editcategory") {
 	include 'admin/backend/editcategory.php';
+
+}elseif ($page == "addtgid") {
+	include 'admin/backend/addtgid.php';
+
+}elseif ($page == "addrid") {
+	include 'admin/backend/addrid.php';
+
+}elseif ($page == "addcategory") {
+	include 'admin/backend/addcategory.php';
+
+}elseif ($page == "deltgid") {
+	include 'admin/backend/deltgid.php';
+
+}elseif ($page == "delrid") {
+	include 'admin/backend/delrid.php';
+
+}elseif ($page == "delcategory") {
+	include 'admin/backend/delcategory.php';
 
 }elseif ($page == "logoff") {
 	include 'gen/logoff.php';

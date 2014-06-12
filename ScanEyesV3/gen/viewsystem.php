@@ -37,30 +37,37 @@ secReq($config['mintgidbrowselvl']); // Users 1+ can use this page
 $talkgroups = getTGList();
 $radioids = getRList();
 ?>
+
 <div class="col-lg-12">
 	<center><h1>System View</h1></center>
 	<a target="_blank" href="http://www.radioreference.com/apps/db/?sid=<?php echo $config['rrdbsid']; ?>">Radioreference Link</a>
 </div>
 <div class="col-lg-8">
 	<h1>Talkgroups</h1>
-	
-
 	<table id="talkgroups" width="100%">
 		<thead>
 			<tr>
 				<th>DEC</th>
-				<th>Name</th>
-				<th>Category</th>
+				<th>Name<?php if($_SESSION['usrlvl'] > 2){echo" <a target='_blank' href='?page=addtgid' title='Add TGID'><img src='static/icons/addtgid.png'></a>
+																<a target='_blank' href='?page=deltgid' title='Delete TGID'><img src='static/icons/delete.png'></a>";}?></th>
+				<th>Category<?php if($_SESSION['usrlvl'] > 2){echo" <a target='_blank' href='?page=addcategory' title='Add Category'><img src='static/icons/addcategory.png'></a>
+																	<a target='_blank' href='?page=delcategory' title='Delete Category'><img src='static/icons/delcategory.png'></a>
+																	<a target='_blank' href='?page=editcategory' title='Modify Category'><img src='static/icons/modcategory.png'></a>";}?></th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php
 			$tagIDs = getTGTags();
 			foreach ($talkgroups as $TGID => $infoArray) {
+				if (@!$tagIDs[$infoArray['CATEGORY']]['TAG'] || @!$tagIDs[$infoArray['CATEGORY']]['COLOR']) {
+					$tagIDs[$infoArray['CATEGORY']]['TAG'] = $infoArray['CATEGORY'];
+					$tagIDs[$infoArray['CATEGORY']]['COLOR'] = "#FF0000";
+				}
 				echo"<tr>
 						<td>{$TGID}</td>
 						<td>";
-						if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=edittgid&TGID={$TGID}'><img src='static/icons/modify.png'> </a>";}
+						if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=edittgid&TGID={$TGID}'><img src='static/icons/modify.png'> </a>
+														   <a target='_blank' href='?page=deltgid&TGID={$TGID}'><img src='static/icons/delete.png'> </a>";}
 						echo $infoArray['NAME'];
 						echo "</td>
 						<td title='{$infoArray['COMMENT']}' bgcolor='{$tagIDs[$infoArray['CATEGORY']]['COLOR']}'>{$tagIDs[$infoArray['CATEGORY']]['TAG']}</td>
@@ -76,7 +83,8 @@ $radioids = getRList();
 		<thead>
 			<tr>
 				<th>DEC</th>
-				<th>Name</th>
+				<th>Name<?php if($_SESSION['usrlvl'] > 2){echo" <a target='_blank' href='?page=addrid'><img src='static/icons/addrid.png' title='Add RID'></a>
+																<a target='_blank' href='?page=delrid'><img src='static/icons/delete.png' title='Delete RID'></a>";}?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -85,7 +93,8 @@ $radioids = getRList();
 				echo"<tr>
 						<td>{$RID}</td>
 						<td title='{$infoArray['COMMENT']}'>";
-				if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=editrid&RID={$RID}'><img src='static/icons/modify.png'> </a>";}
+				if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=editrid&RID={$RID}'><img src='static/icons/modify.png'> </a>
+												   <a target='_blank' href='?page=delrid&RID={$RID}'><img src='static/icons/delete.png'> </a>";}
 				echo "{$infoArray['NAME']}</td>
 					</tr>";
 			}

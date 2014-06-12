@@ -5,6 +5,8 @@ if (basename($_SERVER['SCRIPT_FILENAME']) == basename($_SERVER['REQUEST_URI'])){
 include 'libraries/db-write.php';
 include 'libraries/db-read.php';
 
+
+
 ?>
 
 </html>
