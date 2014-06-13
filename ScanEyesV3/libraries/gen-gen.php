@@ -27,16 +27,35 @@ function sendMail($title,$body,$recip){
 		return "success";
 	}
 }
-function sendAuthEmail($regUname,$regEMail,$regPwSalt){
+function sentDBBackup($recip,$file){
+	
+}
+function sendAuthEmail($regUname,$regEMail,$key){
 	global $config;
 	$_SESSION['reputation']--;
-	$result = sendMail("ScanEyes Activation E-Mail","Here is your activation code: ".$regPwSalt."
-		<br>Alternatively, you can click <a href=\"".$config['httpmethod'].$config['domain']."/?page=auth&username=".$regUname."&code=".$regPwSalt."\">here</a>"
+	$result = sendMail("ScanEyes Activation E-Mail","Here is your activation code: ".$key."
+		<br>Alternatively, you can click <a href=\"".$config['httpmethod'].$config['domain']."/?page=auth&username=".$regUname."&code=".$key."\">here</a>"
 	,$regEMail);
 	if ($result == "success") {
 		return "an email has been sent to ".$regEMail." with your activation code.";
 	}else{
 		return false;
+	}
+}
+function sendResetEmail($email,$key){
+	$emailemail = htmlspecialchars($email); // cleaned email for HTML
+	# key is 0-9a-Z, no san needed
+	global $config;
+	$_SESSION['reputation']--;
+	$senderIP = htmlspecialchars($_SERVER['REMOTE_ADDR']);
+	$result = sendMail("ScanEyes Password Reset","You or someone else has attempted resetting your password. If you intended to reset your password you can click 
+						<a href='{$config['httpmethod']}{$config['domain']}/?page=pwreset&key={$key}'>here</a>. Otherwise ignore this email<br>
+						This email was sent by {$senderIP}"
+	,$email);
+	if ($result == "success") {
+		return "An email has been sent to ".$emailemail." with your Password reset instructions.";
+	}else{
+		return "Internal mailer error";
 	}
 }
 function rrmdir($dir) {

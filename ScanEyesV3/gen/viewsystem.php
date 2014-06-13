@@ -49,7 +49,9 @@ $radioids = getRList();
 			<tr>
 				<th>DEC</th>
 				<th>Name<?php if($_SESSION['usrlvl'] > 2){echo" <a target='_blank' href='?page=addtgid' title='Add TGID'><img src='static/icons/addtgid.png'></a>
-																<a target='_blank' href='?page=deltgid' title='Delete TGID'><img src='static/icons/delete.png'></a>";}?></th>
+																<a target='_blank' href='?page=deltgid' title='Delete TGID'><img src='static/icons/delete.png'></a>
+																<a target='_blank' href='?page=importrrtgid' title='Import Talkgroups from RadioReference'><img src='static/icons/rrimport.png'></a>
+																<a target='_blank' href='?page=importuttgid' title='Import Talkgroups from Unitrunker'><img src='static/icons/utimport.png'></a>";}?></th>
 				<th>Category<?php if($_SESSION['usrlvl'] > 2){echo" <a target='_blank' href='?page=addcategory' title='Add Category'><img src='static/icons/addcategory.png'></a>
 																	<a target='_blank' href='?page=delcategory' title='Delete Category'><img src='static/icons/delcategory.png'></a>
 																	<a target='_blank' href='?page=editcategory' title='Modify Category'><img src='static/icons/modcategory.png'></a>";}?></th>
@@ -58,20 +60,24 @@ $radioids = getRList();
 		<tbody>
 		<?php
 			$tagIDs = getTGTags();
-			foreach ($talkgroups as $TGID => $infoArray) {
-				if (@!$tagIDs[$infoArray['CATEGORY']]['TAG'] || @!$tagIDs[$infoArray['CATEGORY']]['COLOR']) {
-					$tagIDs[$infoArray['CATEGORY']]['TAG'] = $infoArray['CATEGORY'];
-					$tagIDs[$infoArray['CATEGORY']]['COLOR'] = "#FF0000";
+			if (@$talkgroups) {
+				foreach ($talkgroups as $TGID => $infoArray) {
+					if (@!$tagIDs[$infoArray['CATEGORY']]['TAG'] || @!$tagIDs[$infoArray['CATEGORY']]['COLOR']) {
+						$tagIDs[$infoArray['CATEGORY']]['TAG'] = $infoArray['CATEGORY'];
+						$tagIDs[$infoArray['CATEGORY']]['COLOR'] = "#FF0000";
+					}
+					echo"<tr>
+							<td>{$TGID}</td>
+							<td>";
+							if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=edittgid&TGID={$TGID}'><img src='static/icons/modify.png'> </a>
+															   <a target='_blank' href='?page=deltgid&TGID={$TGID}'><img src='static/icons/delete.png'> </a>";}
+							echo $infoArray['NAME'];
+							echo "</td>
+							<td title='{$infoArray['COMMENT']}' bgcolor='{$tagIDs[$infoArray['CATEGORY']]['COLOR']}'>{$tagIDs[$infoArray['CATEGORY']]['TAG']}</td>
+						</tr>";
 				}
-				echo"<tr>
-						<td>{$TGID}</td>
-						<td>";
-						if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=edittgid&TGID={$TGID}'><img src='static/icons/modify.png'> </a>
-														   <a target='_blank' href='?page=deltgid&TGID={$TGID}'><img src='static/icons/delete.png'> </a>";}
-						echo $infoArray['NAME'];
-						echo "</td>
-						<td title='{$infoArray['COMMENT']}' bgcolor='{$tagIDs[$infoArray['CATEGORY']]['COLOR']}'>{$tagIDs[$infoArray['CATEGORY']]['TAG']}</td>
-					</tr>";
+			}else{
+				echo"<tr><td>No TGIDs</td><td>Add some with <a href='?page=importuttgid'>Unitrunker</a> or <a href='?page=importrrtgid'>Radioreference</a></td></tr>";
 			}
 		?>
 		</tbody>
@@ -84,19 +90,24 @@ $radioids = getRList();
 			<tr>
 				<th>DEC</th>
 				<th>Name<?php if($_SESSION['usrlvl'] > 2){echo" <a target='_blank' href='?page=addrid'><img src='static/icons/addrid.png' title='Add RID'></a>
-																<a target='_blank' href='?page=delrid'><img src='static/icons/delete.png' title='Delete RID'></a>";}?></th>
+																<a target='_blank' href='?page=delrid'><img src='static/icons/delete.png' title='Delete RID'></a>
+																<a target='_blank' href='?page=importutrid'><img src='static/icons/utimport.png' title='Import RID from Unitrunker'></a>";}?></th>
 			</tr>
 		</thead>
 		<tbody>
 		<?php
-			foreach ($radioids as $RID => $infoArray) {
-				echo"<tr>
-						<td>{$RID}</td>
-						<td title='{$infoArray['COMMENT']}'>";
-				if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=editrid&RID={$RID}'><img src='static/icons/modify.png'> </a>
-												   <a target='_blank' href='?page=delrid&RID={$RID}'><img src='static/icons/delete.png'> </a>";}
-				echo "{$infoArray['NAME']}</td>
-					</tr>";
+			if (@$radioids) {
+				foreach ($radioids as $RID => $infoArray) {
+					echo"<tr>
+							<td>{$RID}</td>
+							<td title='{$infoArray['COMMENT']}'>";
+					if($_SESSION['usrlvl'] > 2){ echo "<a target='_blank' href='?page=editrid&RID={$RID}'><img src='static/icons/modify.png'> </a>
+													   <a target='_blank' href='?page=delrid&RID={$RID}'><img src='static/icons/delete.png'> </a>";}
+					echo "{$infoArray['NAME']}</td>
+						</tr>";
+				}
+			}else{
+				echo"<tr><td>No RIDs</td><td>Add some with <a href='?page=importutrid'>Unitrunker</a></td></tr>";
 			}
 		?>
 		</tbody>

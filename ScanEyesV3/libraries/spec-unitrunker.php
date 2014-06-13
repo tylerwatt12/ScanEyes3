@@ -19,7 +19,8 @@ function parseUTXML($filename,$type){
 	if ($type == "radioids") { // If user wants to get RIDs
 		foreach ($xml->System->User as $value) {
 			if (empty($value['label']) == false) {
-				$newTGID[(string)$value['id']] = $value['label'];
+				$label = (string)$value['label'];
+				$newTGID[(string)$value['id']] = array( "NAME" => $label);
 			}
 		}
 	}

@@ -24,73 +24,54 @@ if (@!$_GET['page']) { // If a user just types in the website name without page 
 }else{
 	$page = charOnly($_GET['page']); // If page is specified, clean it
 }
-
-if ($page == "home") {
-	include 'gen/home.php';
-
-}elseif ($page == "sandbox") {
-	include 'gen/sandbox.php';
-
-}elseif ($page == "x") {
-	include 'gen/x.php';
-
-}elseif ($page == "x") {
-	include 'gen/x.php';
-
-}elseif ($page == "register") {
-	include 'gen/register.php';
-
-}elseif ($page == "auth") {
-	include 'gen/auth.php';
-
-}elseif ($page == "login") {
-	include 'gen/login.php';
-
-}elseif ($page == "importrrtgid") {
-	include 'admin/backend/importrrtgid.php';
-
-}elseif ($page == "rrupdatetgid") {
-	include 'admin/backend/rrupdatetgid.php';
-
-}elseif ($page == "importuttgid") {
-	include 'admin/backend/importuttgid.php';
-
-}elseif ($page == "utupdatetgid") {
-	include 'admin/backend/utupdatetgid.php';
-
-}elseif ($page == "viewsystem") {
-	include 'gen/viewsystem.php';
-
-}elseif ($page == "edittgid") {
-	include 'admin/backend/edittgid.php';
-
-}elseif ($page == "editrid") {
-	include 'admin/backend/editrid.php';
-
-}elseif ($page == "editcategory") {
-	include 'admin/backend/editcategory.php';
-
-}elseif ($page == "addtgid") {
-	include 'admin/backend/addtgid.php';
-
-}elseif ($page == "addrid") {
-	include 'admin/backend/addrid.php';
-
-}elseif ($page == "addcategory") {
-	include 'admin/backend/addcategory.php';
-
-}elseif ($page == "deltgid") {
-	include 'admin/backend/deltgid.php';
-
-}elseif ($page == "delrid") {
-	include 'admin/backend/delrid.php';
-
-}elseif ($page == "delcategory") {
-	include 'admin/backend/delcategory.php';
-
-}elseif ($page == "logoff") {
-	include 'gen/logoff.php';
+$pages = array('home' => 'gen/home.php', // Main page that's called when website is loaded
+	'logoff' => 'gen/logoff.php',
+	'pwreset' => 'user/backend/pwreset.php',
+	'tgid' => 'gen/tgid.php',
+	'browse' => 'gen/browse.php',
+	'delcategory' => 'admin/backend/delcategory.php',
+	'delrid' => 'admin/backend/delrid.php',
+	'deltgid' => 'admin/backend/deltgid.php',
+	'addcategory' => 'admin/backend/addcategory.php',
+	'addrid' => 'admin/backend/addrid.php',
+	'addtgid' => 'admin/backend/addtgid.php',
+	'editcategory' => 'admin/backend/editcategory.php',
+	'editrid' => 'admin/backend/editrid.php',
+	'edittgid' => 'admin/backend/edittgid.php',
+	'viewsystem' => 'gen/viewsystem.php',
+	'utupdaterid' => 'admin/backend/utupdaterid.php',
+	'utupdatetgid' => 'admin/backend/utupdatetgid.php',
+	'importutrid' => 'admin/backend/importutrid.php',
+	'importuttgid' => 'admin/backend/importuttgid.php',
+	'rrupdatetgid' => 'admin/backend/rrupdatetgid.php',
+	'importrrtgid' => 'admin/backend/importrrtgid.php',
+	'login' => 'gen/login.php',
+	'auth' => 'gen/auth.php',
+	'register' => 'gen/register.php',
+	'sandbox' => 'gen/sandbox.php' // Test page
+);
+if (@$pages[$page]) {
+	include($pages[$page]);
+}else{ // 404
+ include('static/404.php');
 }
+
+
 include 'includes/header.php'; //include navbar
 include 'includes/footer.php'; //include footer
 ?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

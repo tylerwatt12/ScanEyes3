@@ -146,6 +146,17 @@ function getSingleRID($RID){
 		  			     'NAME' => $res['NAME'],
 		 			     'COMMENT' => $res['COMMENT']);
 }
+function getDateCalls($date){
+$db = new callsDB(); // Call database instance
+	$db->busyTimeout(5000);
+	$result = $db->query("SELECT TGID FROM {$date}"); // Select all the calls DB
+	unset($db); // unlock database
+	while($res = $result->fetchArray(SQLITE3_ASSOC)){ //While there are SQL returned entries,
+		if(!isset($res['ID'])) continue;  //If there are no more values, kill loop
+		$tagID[$res['ID']] = array('TAG' => $res['TAG'], 'COLOR' => $res['COLOR']); //Set array,
+	}
+	return $tagID;
+}
 ?>
 
 
