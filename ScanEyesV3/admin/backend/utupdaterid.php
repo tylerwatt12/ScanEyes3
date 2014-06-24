@@ -15,9 +15,6 @@ $timer = time(); // Start timer
 
 $newRIDS = parseUTXML($_POST['xmlfile'],"radioids"); //re-get info from Radioreference
 
-$now = time();
-growl("notice","Fetched from RRAPI in ".($now-$timer)."Fetched from XML in ".($now-$timer)." seconds.");
-
 unset($_POST['xmlfile']); //remove file from POST array
 $statement = ""; // set variable blank to avoid notice error
 $deletecounter = 0;//set counters
@@ -25,6 +22,7 @@ $updatecounter = 0;
 $addcounter = 0;
 
 $date = date('Y-m-d');
+$talkgroupsClass->beginTransaction();// Start transaction
 foreach ($_POST as $RID => $action) { //for every talkgroup that had a checkbox selected
 	/* Possible actions
 	m = modify talkgroup, use update
@@ -35,25 +33,20 @@ foreach ($_POST as $RID => $action) { //for every talkgroup that had a checkbox 
 	$RID = numOnly($RID); // clean talkgroup, numbers only
 	#compile SQL statement
 	if ($action == "r") {
-		$statement .= "DELETE FROM RIDRELATE WHERE RID='{$RID}'; ";
+		$statement = "DELETE FROM RIDRELATE WHERE RID='{$RID}'; ";
 		$deletecounter++;
 	}elseif ($action == "m") {
-		$statement .= "UPDATE RIDRELATE SET NAME='{$newRIDS[$RID]['NAME']}',COMMENT='Updated: {$date}' WHERE RID='{$RID}'; ";
+		$statement = "UPDATE RIDRELATE SET NAME='{$newRIDS[$RID]['NAME']}',COMMENT='Updated: {$date}' WHERE RID='{$RID}'; ";
 		$updatecounter++;
 	}elseif ($action == "a") {
-		$statement .=   "INSERT INTO RIDRELATE(RID, NAME, COMMENT) VALUES ('{$RID}', '{$newRIDS[$RID]['NAME']}', 'Added: {$date}'); ";
+		$statement = "INSERT INTO RIDRELATE(RID, NAME, COMMENT) VALUES ('{$RID}', '{$newRIDS[$RID]['NAME']}', 'Added: {$date}'); ";
 		$addcounter++;
 	}
+	$talkgroupsClass->query($statement); // run the query
 }
+$talkgroupsClass->commit();// commit transaction
 $now = time();
-growl("notice","Compiled SQL statement in ".($now-$timer)." seconds.");
-
-
-echo runSQLtalkgroupsDB($statement)."<br>";
-
-$now = time();
-growl("notice","Executed statement in ".($now-$timer)." seconds.");
 unlink('static/unitrunker.xml');
-growl("notice","Added: ".$addcounter." talkgroups, Updated:".$updatecounter." talkgroups, Deleted: ".$deletecounter." talkgroups");
+growl("notice","Added: ".$addcounter." RIDs, Updated:".$updatecounter." RIDs, Deleted: ".$deletecounter." RIDs");
 growl("notice","Deleted temp file");
 ?>

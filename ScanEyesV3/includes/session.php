@@ -11,10 +11,9 @@ if ($_SESSION['reputation'] < 1) {
 	echo "Please contact the administrator for assistance. ";
 	exit();
 }
-
-#function customError($errno, $errstr) {
-##  echo "<b>Error:</b> [$errno] $errstr";
-#}
+function customError($errno, $errstr) {
+  #echo "<b>Error:</b> [$errno] $errstr";
+}
 #set_error_handler("customError");
 #If
 

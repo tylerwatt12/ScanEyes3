@@ -21,6 +21,9 @@ $startTime = time(); // Start timer
 move_uploaded_file($_FILES['xml']["tmp_name"],"static/unitrunker.xml");
 $filename = "static/unitrunker.xml";
 $newTGID = parseUTXML($filename,"talkgroups"); // Get data from XML file
+foreach ($newTGID as $TGID => $valueArray) { // Guess gategory IDs from keywords in talkgroup name
+	$newTGID[$TGID]["CATEGORY"] = autoTagCategories($valueArray["NAME"]);
+}
 $curTGID = getTGList(); // Get data from local DB
 #$newRRTGIDS = array_diff($newTGID, $curTGID); #This line doesn't work with 2D arrays, below is the fix
 	if (@$newTGID) {

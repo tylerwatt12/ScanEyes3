@@ -1,17 +1,17 @@
 <?php
 function queryUsernameGetUser($username){
+	$username = SQLite3::escapeString(charNumOnly($username)); // Sanitize for SQL in case
 	$db = new userDB();
 	$db->busyTimeout(5000);
-	$username = strtolower(preg_replace("/[^a-zA-Z0-9]+/", "", $username)); // clean username
 	$result = $db->query("SELECT * FROM USERS WHERE USERNAME='".charNumOnly($username)."' COLLATE NOCASE");
 	unset($db);
 	return $result->fetchArray();
 }
 function checkLogin($username,$password){
+	$username = SQLite3::escapeString(charNumOnly($username)); // Sanitize for SQL in case
 	$db = new userDB(); // call user database
 	$db->busyTimeout(5000);
 	$_SESSION['usrlvl'] = 1; //reset user level
-	$username = preg_replace("/[^a-zA-Z0-9]+/", "", $username); // clean username
 	$result = $db->query("SELECT * FROM USERS WHERE USERNAME='".charNumOnly($username)."' COLLATE NOCASE");
 	unset($db);
 	$userArray = $result->fetchArray();
@@ -41,8 +41,7 @@ function checkLogin($username,$password){
 }
 function getTGTags(){
 	#########################################
-	#	Don't call this function too often	#
-	#	Set this function as a variable 	#
+	#	      call this function once    	#
 	#########################################
 	# Output: $tagID[tagnumber] = array(	#
 	#			"TAG" => "Police Dispatch", #
@@ -60,7 +59,7 @@ function getTGTags(){
 	return $tagID;
 }
 function getNotes($username){
-	$username = charNumOnly($username); // Clean username
+	$username = SQLite3::escapeString(charNumOnly($username)); // Sanitize for SQL in case
 	$db = new userDB();
 	$db->busyTimeout(5000);
 	$result = $db->query("SELECT NOTES FROM USERS WHERE USERNAME='{$username}'"); //query for notes file in user profile
@@ -124,7 +123,7 @@ function getRList(){
 		return $curTGID;
 	}
 function getSingleTGID($TGID){
-	$TGID = numOnly($TGID);
+	$TGID = SQLite3::escapeString(numOnly($TGID)); // Sanitize for SQL in case
 	$db = new talkgroupsDB(); // Call database instance
 		$db->busyTimeout(5000);
 		$result = $db->query("SELECT * FROM TGRELATE WHERE TGID='{$TGID}'"); // Select all the RID INFO from the DB
@@ -136,7 +135,7 @@ function getSingleTGID($TGID){
 		 			     'CATEGORY' => $res['TAG']);
 }
 function getSingleRID($RID){
-	$RID = numOnly($RID);
+	$RID = SQLite3::escapeString(numOnly($RID)); // Sanitize for SQL in case
 	$db = new talkgroupsDB(); // Call database instance
 		$db->busyTimeout(5000);
 		$result = $db->query("SELECT * FROM RIDRELATE WHERE RID='{$RID}'"); // Select all the RID INFO from the DB
@@ -147,34 +146,59 @@ function getSingleRID($RID){
 		 			     'COMMENT' => $res['COMMENT']);
 }
 function getDateCalls($date){
-$db = new callsDB(); // Call database instance
-	$db->busyTimeout(5000);
-	$result = $db->query("SELECT TGID FROM {$date}"); // Select all the calls DB
-	unset($db); // unlock database
-	while($res = $result->fetchArray(SQLITE3_ASSOC)){ //While there are SQL returned entries,
-		if(!isset($res['ID'])) continue;  //If there are no more values, kill loop
-		$tagID[$res['ID']] = array('TAG' => $res['TAG'], 'COLOR' => $res['COLOR']); //Set array,
+	#Give this function a date without hyphens e.g. 20140613 and it will show you all the talkgroups that played that day, and how many times each
+	$date = SQLite3::escapeString(numOnly(substr($date,0,8))); // Sanitize for SQL in case
+	if ($date>date('Ymd')) { // If date is future return error
+		growl("error","Date is the future");
+		return;
 	}
-	return $tagID;
+	$db = new callsDB(); // Call database instance
+	$db->busyTimeout(5000);
+	$result = $db->query("SELECT TGID FROM '{$date}'; "); // Select all the calls DB
+	if ($db->lastErrorMsg() !== "not an error") {
+		growl("error","No calls for selected day");
+		return;
+	}
+	while($res = $result->fetchArray(SQLITE3_ASSOC)){ //While there are SQL returned entries,
+		if(!isset($res['TGID'])) continue;  //If there are no more values, kill loop
+			if (@!$countTalkgroups[$res['TGID']]) { // If counter doesn't exist
+				$countTalkgroups[$res['TGID']] = 0; //create conuter
+			}
+			$countTalkgroups[$res['TGID']]++; // count up one	
+	}
+	arsort($countTalkgroups);
+	return $countTalkgroups;
+	#returns with an array with each talkgroup as key, number of times called as value
+}
+function getCallList($TGID,$date,$offset,$list){
+	#gets every call that happened on a day on a TG offsetted and limited
+	$date = SQLite3::escapeString(numOnly(substr($date,0,8))); // Sanitize for SQL in case
+	$TGID = SQLite3::escapeString(numOnly(substr($TGID,0,10))); // Sanitize for SQL in case
+	$offset = SQLite3::escapeString(numOnly(substr($offset,0,8))); // Sanitize for SQL in case
+	$list = SQLite3::escapeString(numOnly(substr($list,0,8))); // Sanitize for SQL in case
+
+	if ($date>date('Ymd')) { // If date is future return error
+		growl("error","Date is the future");
+		return;
+	}
+	$db = new callsDB(); // Call database instance
+	$db->busyTimeout(5000);
+	$result = $db->query("SELECT * FROM '{$date}' WHERE TGID={$TGID} ORDER BY UNIXTS ASC LIMIT {$offset},{$list}; "); // Select all the calls DB
+	if ($db->lastErrorMsg() !== "not an error") {
+		growl("error","No calls for selected day");
+		return;
+	}
+	while($res = $result->fetchArray(SQLITE3_ASSOC)){ //While there are SQL returned entries,
+		if(!isset($res['TGID'])) continue;  //If there are no more values, kill loop
+		$returnedArray[$res['UNIXTS']] = array( 'RID' => $res['RID'], 'COMMENT' => $res['COMMENT']);
+	}
+	krsort($returnedArray);
+	// Getting the number of total results //
+	$rows = $db->query("SELECT COUNT(TGID) as count FROM '{$date}' WHERE TGID={$TGID}; ");
+	$row = $rows->fetchArray();
+	$numRows = $row['count'];
+	#return $countTalkgroups;
+	#returns with an array with each talkgroup as key, number of times called as value
+	return array('COUNT' => $numRows, 'DATA' => $returnedArray);
 }
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

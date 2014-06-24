@@ -20,7 +20,13 @@ growl("notice","Fetched from RRAPI in ".($now-$timer)." seconds.");
 
 unset($_POST['rrdbUsername']); //remove username and password from POST array
 unset($_POST['rrdbPassword']);
-$statement = ""; // set variable blank to avoid notice error
+
+$deletecounter = 0;//set counters
+$updatecounter = 0;
+$addcounter = 0;
+
+$date = date('Y-m-d');
+$talkgroupsClass->beginTransaction();// Start transaction
 foreach ($_POST as $TGID => $action) { //for every talkgroup that had a checkbox selected
 	/* Possible actions
 	m = modify talkgroup, use update
@@ -29,21 +35,19 @@ foreach ($_POST as $TGID => $action) { //for every talkgroup that had a checkbox
 	x = somehow a disabled checkbox slipped through, there is a bug in the code
 	*/
 	$TGID = numOnly($TGID); // clean talkgroup, numbers only
-	$date = date('Y-m-d');
 	#compile SQL statement
 	if ($action == "r") {
-		$statement .= "DELETE FROM TGRELATE WHERE TGID='{$TGID}'; ";
+		$statement = "DELETE FROM TGRELATE WHERE TGID='{$TGID}'; ";
+		$deletecounter++;
 	}elseif ($action == "m") {
-		$statement .= "UPDATE TGRELATE SET NAME='{$newTGIDS[$TGID]['NAME']}',COMMENT='Updated: {$date}',TAG='{$newTGIDS[$TGID]['CATEGORY']}' WHERE TGID='{$TGID}'; ";
+		$statement = "UPDATE TGRELATE SET NAME='{$newTGIDS[$TGID]['NAME']}',COMMENT='Updated: {$date}',TAG='{$newTGIDS[$TGID]['CATEGORY']}' WHERE TGID='{$TGID}'; ";
+		$updatecounter++;
 	}elseif ($action == "a") {
-		$statement .=   "INSERT INTO TGRELATE(TGID, NAME, COMMENT, TAG) VALUES ('{$TGID}', '{$newTGIDS[$TGID]['NAME']}', 'Added: {$date}', '{$newTGIDS[$TGID]['CATEGORY']}'); ";
+		$statement =   "INSERT INTO TGRELATE(TGID, NAME, COMMENT, TAG) VALUES ('{$TGID}', '{$newTGIDS[$TGID]['NAME']}', 'Added: {$date}', '{$newTGIDS[$TGID]['CATEGORY']}'); ";
+		$addcounter++;
 	}
+	$talkgroupsClass->query($statement); // run the query
 }
-$now = time();
-growl("notice","Fetched from RRAPI in ".($now-$timer)."Compiled SQL statement in ".($now-$timer)." seconds.");
-
-echo runSQLtalkgroupsDB($statement);
-
-$now = time();
-growl("notice","Executed statement in ".($now-$timer)." seconds.");
+$talkgroupsClass->commit();// commit transaction
+growl("notice","Added: ".$addcounter." talkgroups, Updated:".$updatecounter." talkgroups, Deleted: ".$deletecounter." talkgroups");
 ?>

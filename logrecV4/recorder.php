@@ -135,10 +135,10 @@
 				$statement = ""; // make empty statement for SQL
 				if (date("Ymd") > @$date) { // If date has changed (current date is higher than old date)
 					$date = date("Ymd"); // Update date variable
-					$statement .= "CREATE TABLE '{$date}' (UNIXTS INTEGER NOT NULL, TGID INTEGER NOT NULL, RID INTEGER NOT NULL, LOCATION INTEGER NOT NULL, COMMENT VARCHAR(300), PRIMARY KEY (UNIXTS)); "; //add create new table to SQL command
+					$statement .= "CREATE TABLE '{$date}' (UNIXTS INTEGER NOT NULL, TGID INTEGER NOT NULL, RID INTEGER NOT NULL, COMMENT VARCHAR(300), PRIMARY KEY (UNIXTS)); "; //add create new table to SQL command
 				}
 				
-				$statement .= "INSERT INTO '{$date}' (UNIXTS,TGID,RID,LOCATION) VALUES ('{$saveFilename}','{$currentFile['TGID']}','{$currentFile['RID']}','{$date}'); "; // Write call to DB
+				$statement .= "INSERT INTO '{$date}' (UNIXTS,TGID,RID) VALUES ('{$saveFilename}','{$currentFile['TGID']}','{$currentFile['RID']}'); "; // Write call to DB
 				pclose(popen("start /min sox.exe -t waveaudio ".$config['wad']." -r".$config['srate']." -c1 \"".$fullSavePath.$saveFilename.".mp3\"","r"));
 				
 				$callsHandle = new callsDB(); // call database

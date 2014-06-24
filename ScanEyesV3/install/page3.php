@@ -159,6 +159,12 @@ if (@$_POST['rrtos']) {
 					<option value="Pacific/Tongatapu">(GMT+13:00) Nuku'alofa</option>
 					<option value="Pacific/Kiritimati">(GMT+14:00) Kiritimati</option>
 				</select><br>
+				Maximum calls per playlist
+				<input name="maxcpp" type="number" min="1" max="1024" value="200" title="Max:1024"><br>
+				Maximum days queryable (higher = slower)
+				<input name="maxdq" type="number" min="1" max="9999" value="120" title="Showing more results, makes database reads slower for other people"><br>
+				Maximum results per page
+				<input name="maxrpp" type="number" min="1" max="500" value="200" title="Max:500"><br>
 				<input type="button" name="previous" class="previous action-button" value="Previous" />
 				<input type="button" name="next" class="next action-button" value="Next" />
 			</fieldset>
@@ -235,10 +241,6 @@ if (@$_POST['rrtos']) {
 				<input name="mintgidbrowselvl" type="number" min="1" max="4" value="1"><br>
 				Minimum user level required to use search
 				<input name="mincallbrowselvl" type="number" min="1" max="4" value="1"><br>
-				Maximum calls per playlist
-				<input name="maxcpp" type="number" min="1" max="1024" value="200" title="Max:1024"><br>
-				Maximum days queryable (higher = slower)
-				<input name="maxdq" type="number" min="1" max="9999" value="120" title="Showing more results, makes database reads slower for other people"><br>
 				<input type="button" name="previous" class="previous action-button" value="Previous" />
 				<input type="button" name="next" class="next action-button" value="Next" />
 			</fieldset>
@@ -267,7 +269,7 @@ if (@$_POST['rrtos']) {
 					<option value="48000">48000Hz</option>
 				</select><br>
 				Full location and filename to sdrsharptrunking.log
-				<input name="trunkloc" type="text" placeholder="S:/httpd/UniTrunker/sdrsharptrunking.log"><br>
+				<input name="trunkloc" type="text" placeholder="C:/xampp/htdocs/UniTrunker/sdrsharptrunking.log"><br>
 				Location to save calls to (please leave default)
 				<input name="callsavedir" type="text" value="../ScanEyesV3/calls/"><br>
 				<input type="button" name="previous" class="previous action-button" value="Previous" />

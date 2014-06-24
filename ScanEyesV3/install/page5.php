@@ -1,69 +1,30 @@
 <?php
-	set_time_limit(300);
-	function parseUTXML($filename,$type){
-		################################################
-		################################################
-		#				GET DATA FROM XML 			   #
-		################################################
-		################################################
-		global $config;
-		$xml = simplexml_load_file($filename);
-		if ($type == "talkgroups") { // If user wants to get talktroups
-			foreach ($xml->System->Group as $value) {
-				if (empty($value['label']) == false) {
-					$newTGID[(string)$value['id']] = array( "NAME" => $value['label'],"CATEGORY" => '100');
-				}
-			}
-		}
-
-		if ($type == "radioids") { // If user wants to get RIDs
-			foreach ($xml->System->User as $value) {
-				if (empty($value['label']) == false) {
-					$newTGID[(string)$value['id']] = $value['label'];
-				}
-			}
-		}
-		ksort($newTGID);
-		return $newTGID;
-	}
-	function runSQLtalkgroupsDB($statement){
-		################################################
-		################################################
-		#				WRITE SQL TO DB 			   #
-		################################################
-		################################################
-		$db = new talkgroupsDB(); // Call database instance
-		$db->busyTimeout(5000);
-		$result = $db->exec($statement);
-		if (@$db->lastErrorMsg() == "not an error") {
-			return "XML Import succeeded";
-		}else{
-			return "There was an error: ".$db->lastErrorMsg()."<br>";
-		}
-	}
-	class talkgroupsDB extends SQLite3{
-		    function __construct()
-		    {
-		        $this->open('../../database/talkgroups.sqlite'); //Done
-		    }
-		}
+include('../libraries/spec-unitrunker.php');
+set_time_limit(300);
 #########################################################################
 /////////////			IMPORT TALKGROUPS DATABASE 			/////////////
 #########################################################################
 if (@$_FILES['xml']["tmp_name"]) {
+	$talkgroupsClass = new PDO('sqlite:../../database/talkgroups.sqlite');
 	$talkgroups = parseUTXML($_FILES['xml']["tmp_name"],"talkgroups"); //parse xml
+	foreach ($talkgroups as $TGID => $valueArray) { // Guess gategory IDs from keywords in talkgroup name
+		$talkgroups[$TGID]["CATEGORY"] = autoTagCategories($valueArray["NAME"]);
+	}
 	$radioIDS = parseUTXML($_FILES['xml']["tmp_name"],"radioids"); //parse xml
 
 	$date = date('Y-m-d');
-	$statement = "";
-
+	$talkgroupsClass->beginTransaction();// Start transaction
 	foreach ($talkgroups as $TGID => $array) {
-		$statement .=   "INSERT INTO TGRELATE(TGID, NAME, COMMENT, TAG) VALUES ('{$TGID}', '{$array['NAME']}', 'Added: {$date}', '{$array['CATEGORY']}'); ";
+		$statement =   "INSERT INTO TGRELATE(TGID, NAME, COMMENT, TAG) VALUES ('{$TGID}', '{$array['NAME']}', 'Added: {$date}', '{$array['CATEGORY']}'); ";
+		$talkgroupsClass->query($statement); // run the query
 	}
+	$talkgroupsClass->commit();// commit transaction	TGIDS
+	$talkgroupsClass->beginTransaction();// Start transaction
 	foreach ($radioIDS as $RID => $name) {
-		$statement .=   "INSERT INTO RIDRELATE(RID, NAME, COMMENT) VALUES ('{$RID}', '{$name}', 'Added: {$date}'); ";
+		$statement =   "INSERT INTO RIDRELATE(RID, NAME, COMMENT) VALUES ('{$RID}', '{$name['NAME']}', 'Added: {$date}'); ";
+		$talkgroupsClass->query($statement); // run the query
 	}
-	$result = runSQLtalkgroupsDB($statement); // Execute import
+	$talkgroupsClass->commit();// commit transaction	RIDS
 	unlink($_FILES['xml']["tmp_name"]); // Delete temp file
 }
 ?>
