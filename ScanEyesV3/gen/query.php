@@ -2,8 +2,8 @@
 if (basename($_SERVER['SCRIPT_FILENAME']) == basename($_SERVER['REQUEST_URI'])){
 	exit();
 }
-if (@!$_GET['TGID'] || @!$_GET['date']) {
-	growl("error","no data");
+if (@!$_GET['term']) {
+	growl("error","no search input specified");
 	exit();
 }
 include 'libraries/db-write.php';
@@ -15,7 +15,7 @@ if (@!$_GET['sortby']) { // If no sortby specificed
 	$_GET['sortby'] = "UNIXTS";
 }
 if (@!$_GET['order']) { // If no sortby specificed
-	$_GET['order'] = "desc";
+	$_GET['order'] = "asc";
 }
 if (@!$_GET['offset']) { // If no offset specificed
 	$_GET['offset'] = 0;
@@ -29,18 +29,12 @@ if ($_GET['list'] > $maxrpp) { // If wanted number of calls is over maximum
 }else{
 	$_GET['offset'] = numOnly(substr($_GET['offset'],0,3)); //otherwise set number of calls to user input
 }
-
-
-$dateName = date('l, F nS, Y',strtotime($_GET['date']));
-$dashedDate = date('Y-m-d',strtotime($_GET['date']));
-$TGID = numOnly($_GET['TGID']);
-$date = numOnly($_GET['date']);
 $offset = numOnly($_GET['offset']);
 $list = numOnly($_GET['list']);
 $sortby = charOnly($_GET['sortby']);
 $order = charOnly($_GET['order']);
-$calls = getCallList($TGID,$date,$offset,$list,$sortby,$order); //Gets list of calls that match 
-$TGName = getTGlist()[$TGID]['NAME'];
+$lastxdays = $config['maxdq'];
+$calls = getQueryCallList($lastxdays,$_GET['term'],$offset,$list,$sortby,$order); //Gets list of calls that match 
 $RID = getRList();
 
 #for form
@@ -86,48 +80,3 @@ if ($sortby == "COMMENT"){$htmlformSortbyCOMMENT = "selected";}else{$htmlformSor
 
 		";
 ?>
-<h4><?php echo "Talkgroups on ".$TGName." from ".$dateName; ?></h4>
-<h5><?php if (($offset+$list) > $calls['COUNT']) {$top = $calls['COUNT'];}else{$top = ($offset+$list);}
-		  echo(($offset+1)."-".($top)." of ".$calls['COUNT']);?></h5>
-<table id="calls">
-	<thead>
-		<th>CID</th>
-		<th>Time</th>
-		<th>Length</th>
-		<th>Name</th>
-		<th>Comment</th>
-	</thead>
-	<tbody>
-		<?php
-			if (@$calls) {
-				foreach ($calls['DATA'] as $CID => $valueArray) {
-					$time = date('h:i:s A',substr($CID,0,10));
-					$tz  = date('P e');
-					$playurl = "?page=playcall&CID={$CID}";
-					$mp3FileLocal = $config['sccallsavedir'].'/'.$dashedDate.'/'.$CID.$config['sndext'];
-					$ago = ago(substr($CID, 0, 10));
-					if (is_file($mp3FileLocal)) {// If file exists in folder
-						$mp3Handle = new mp3file($mp3FileLocal);
-						@$length = $mp3Handle->get_metadata()['Length'];
-							if (@$length) { // If call is over 0 seconds long, show call
-								if (@!$RID[$valueArray['RID']]) { // If no formal RID name found, make RID unknown
-									$ridname = "Unknown";
-								}else{
-									$ridname = $RID[$valueArray['RID']]['NAME'];
-								}	
-								echo "	<tr>
-											<td style='text-align:center'><a href='{$playurl}' target='_blank'>{$CID}</a></td>
-											<td style='text-align:center' title='{$tz}&#13;{$CID}&#13;{$ago}'>{$time}</td>
-											<td style='text-align:left'>{$length}</td>
-											<td style='text-align:left' title='{$valueArray['RID']}'>{$ridname}</td>
-											<td style='text-align:left'>{$valueArray['COMMENT']}</td>
-										</tr>";
-							}
-					}
-					
-				}
-			}
-		?>
-	</tbody>
-</table>
-<small>Calls under 1 second long will not be shown.</small>

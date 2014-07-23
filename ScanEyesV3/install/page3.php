@@ -262,16 +262,12 @@ if (@$_POST['rrtos']) {
 				<input name="sndext" type="text" value=".mp3"><br>
 				Windows Audio Device number, selects which audio input logrecorder will record from
 				<input name="wad" type="number" value="2"><br>
-				Sample rate for recording
-				<select name="srate">
-					<option value="22050" selected="selected">22050Hz</option>
-					<option value="44100">44100Hz</option>
-					<option value="48000">48000Hz</option>
-				</select><br>
 				Full location and filename to sdrsharptrunking.log
 				<input name="trunkloc" type="text" placeholder="C:/xampp/htdocs/UniTrunker/sdrsharptrunking.log"><br>
 				Location to save calls to (please leave default)
 				<input name="callsavedir" type="text" value="../ScanEyesV3/calls/"><br>
+				Location for ScanEyes to look for calls (please leave default)
+				<input name="sccallsavedir" type="text" value="calls"><br>
 				<input type="button" name="previous" class="previous action-button" value="Previous" />
 				<input type="submit" name="submit" class="action-button" value="Submit" />
 			</fieldset>

@@ -31,7 +31,9 @@ $pages = array('home' => 'gen/home.php', // Main page that's called when website
 	'logoff' => 'gen/logoff.php', // An authenticated user can log off here
 	'pwreset' => 'user/backend/pwreset.php', // An unauthenticated user can reset their passowrd here
 	'tgid' => 'gen/tgid.php', // A user can use this page to view and play all the calls on a date(directed to page from below)
+	'playcall' => 'gen/playcall.php', // When a user clicks on a call, this page formats the audio in an html5 audio player with info
 	'browse' => 'gen/browse.php', // A user can use this page to see all the talkgroups that were called on a date
+	'query' => 'gen/query.php', // A user can type a query string and get results based on that
 	'delcategory' => 'admin/backend/delcategory.php', // A DBadmin+ can delete categories in this page
 	'delrid' => 'admin/backend/delrid.php', // A DBadmin+ can delete radioids in this page
 	'deltgid' => 'admin/backend/deltgid.php',  // A DBadmin+ can delete talkgroups in this page
@@ -48,6 +50,7 @@ $pages = array('home' => 'gen/home.php', // Main page that's called when website
 	'importuttgid' => 'admin/backend/importuttgid.php', // A DBadmin+ can add talkgroups from Unitrunker
 	'rrupdatetgid' => 'admin/backend/rrupdatetgid.php', // backend page for updating radioreference talkgroups
 	'importrrtgid' => 'admin/backend/importrrtgid.php', // A DBadmin+ can add talkgroups from radioreference
+	'admincp' => 'admin/UI/admincp.php', // An admin can access this page for dashboard statistics
 	'login' => 'gen/login.php', // Page where a user can log into scaneyes
 	'auth' => 'gen/auth.php', // Page a user is sent to activate their account with code
 	'register' => 'gen/register.php', // Where users come to register

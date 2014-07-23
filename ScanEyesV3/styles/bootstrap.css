@@ -18,7 +18,6 @@ body {
     font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     font-size:12px;background:#fff;
     border-collapse:collapse;
-    width: 95%;
     text-align:left;margin:20px;
 }
 #talkgroups th{
@@ -29,16 +28,16 @@ body {
 }
 #talkgroups td{
   border-bottom:1px solid #ccc;
+  padding-right:4px;
 }
 #talkgroups tbody tr:hover td{
-  font-weight: bold;
+  color: red;
 }
 
 #calls{
     font-family:"Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
     font-size:12px;background:#fff;
     border-collapse:collapse;
-    width: 95%;
     text-align:left;margin:20px;
 }
 #calls th{
@@ -49,9 +48,10 @@ body {
 }
 #calls td{
   border-bottom:1px solid #ccc;
+  padding-right:4px;
 }
 #calls tbody tr:hover td{
-  font-weight: bold;
+  color: red;
 }
 
 #radioids{

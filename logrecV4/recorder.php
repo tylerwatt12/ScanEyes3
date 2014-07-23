@@ -33,7 +33,6 @@
 	date_default_timezone_set($configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='date_default_timezone_set'")->fetchArray()['VALUE']);
 	//Sox settings
 	$config['wad'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='wad'")->fetchArray()['VALUE'];
-	$config['srate'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='srate'")->fetchArray()['VALUE'];
 	//Program Settings
 	$config['trunkloc'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='trunkloc'")->fetchArray()['VALUE'];
 	$config['callsavedir'] = $configHandle->query("SELECT * FROM SETTINGS WHERE SETTING='callsavedir'")->fetchArray()['VALUE'];
@@ -92,14 +91,33 @@
 
 	#INITIALIZE CODE
 	killsox(); //Kill any existing instances of SOX
-	echo "LOG RECORDER by Tylerwatt12. Version 4.0.3\n\n\n\n";
-	sendMail("LogRecorder STARTED","<b>LogRecorder was started or restarted on: ".date("F j, Y, g:i a")."</b>");
-	$date = date("Ymd"); // Set variable for daily table creation
-	$logHandle = new logDB(); // Get ready to write to log
-	$timestamp = time();
-	$logHandle->busyTimeout(5000);
-	$logHandle->exec("INSERT INTO 'LOG' (TIMESTAMP,TYPE,IP,USER,COMMENT) VALUES ('{$timestamp}','LOGRC','127.0.0.1','LOCALHOST','LogRecorderv4 was restarted')"); // Take note of logrecorder's status
-	unset($logHandle);
+	echo "LOG RECORDER by Tylerwatt12. Version 4.0.4\n\n\n\n";
+	if (file_exists($config['trunkloc']) == FALSE) { // If sdrsharptrunking.log can't be found
+		echo"sdrsharptrunking.log not found. Please install remote.dll into your unitrunker folder and install VC++Redist. Start your debug receiver and try again.";
+		$timestamp = time();
+		$logHandle = new logDB(); // Get ready to write to log
+		$logHandle->busyTimeout(5000);
+		$logHandle->exec("INSERT INTO 'LOG' (TIMESTAMP,TYPE,IP,USER,COMMENT) VALUES ('{$timestamp}','LOGER','127.0.0.1','LOCALHOST','LogRecorderv4 couldnt be started sdrsharptrunking.log was not found')"); // Take note of logrecorder's status
+		unset($logHandle);
+		exit();
+	}
+	sendMail("LogRecorder STARTED","<b>LogRecorder was started or restarted on: ".date("F j, Y, g:i a")."</b>
+				<br><b>Trunk file location: </b>{$config['trunkloc']}
+				<br><b>Call save location: </b>{$config['callsavedir']}");
+	// Make log entry for logrecorder start
+		$date = date("Ymd"); // Set variable for daily table creation
+		$logHandle = new logDB(); // Get ready to write to log
+		$timestamp = time();
+		$logHandle->busyTimeout(5000);
+		$logHandle->exec("INSERT INTO 'LOG' (TIMESTAMP,TYPE,IP,USER,COMMENT) VALUES ('{$timestamp}','LOGRC','127.0.0.1','LOCALHOST','LogRecorderv4 was restarted')"); // Take note of logrecorder's status
+		unset($logHandle);
+	// End making log entry for logrecorder start
+	//Create first table
+		$callsHandle = new callsDB(); // call database
+		$callsHandle->busyTimeout(5000);
+		$callsHandle->exec("CREATE TABLE '{$date}' (UNIXTS INTEGER NOT NULL, TGID INTEGER NOT NULL, RID INTEGER NOT NULL, LENGTH INTEGER, COMMENT VARCHAR(300), PRIMARY KEY (UNIXTS)); ");
+		unset($callsHandle);
+	// End create first table
 	sleep(1);
 
 	$staleFile = readfil();
@@ -135,12 +153,11 @@
 				$statement = ""; // make empty statement for SQL
 				if (date("Ymd") > @$date) { // If date has changed (current date is higher than old date)
 					$date = date("Ymd"); // Update date variable
-					$statement .= "CREATE TABLE '{$date}' (UNIXTS INTEGER NOT NULL, TGID INTEGER NOT NULL, RID INTEGER NOT NULL, COMMENT VARCHAR(300), PRIMARY KEY (UNIXTS)); "; //add create new table to SQL command
+					$statement .= "CREATE TABLE '{$date}' (UNIXTS INTEGER NOT NULL, TGID INTEGER NOT NULL, RID INTEGER NOT NULL, LENGTH INTEGER, COMMENT VARCHAR(300), PRIMARY KEY (UNIXTS)); "; //add create new table to SQL command
 				}
 				
 				$statement .= "INSERT INTO '{$date}' (UNIXTS,TGID,RID) VALUES ('{$saveFilename}','{$currentFile['TGID']}','{$currentFile['RID']}'); "; // Write call to DB
-				pclose(popen("start /min sox.exe -t waveaudio ".$config['wad']." -r".$config['srate']." -c1 \"".$fullSavePath.$saveFilename.".mp3\"","r"));
-				
+				pclose(popen("start /min sox.exe -t waveaudio {$config['wad']} {$fullSavePath}{$saveFilename}.mp3","r"));
 				$callsHandle = new callsDB(); // call database
 				$callsHandle->busyTimeout(5000);
 				$callsHandle->exec($statement);

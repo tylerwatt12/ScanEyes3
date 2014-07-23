@@ -134,6 +134,48 @@ function getSingleTGID($TGID){
 		 			     'COMMENT' => $res['COMMENT'],
 		 			     'CATEGORY' => $res['TAG']);
 }
+function getSingleCall($CID){
+	global $config;
+
+	$CID = substr($CID, 0,16);
+	$CID = SQLite3::escapeString(numOnly($CID)); // Sanitize for SQL in case
+	$db = new callsDB(); // Call database instance
+	$db->busyTimeout(5000);
+	$date = date('Ymd',substr($CID,0,10));
+	$dashedDate = date('Y-m-d',substr($CID,0,10));
+	$result = $db->query("SELECT * FROM '{$date}' WHERE UNIXTS='{$CID}'"); // Select all the RID INFO from the DB
+	unset($db); // unlock database
+	$res = $result->fetchArray();
+	$tggrab = getSingleTGID($res['TGID']);
+	$catgrab = getSingleCat($tggrab['CATEGORY']);
+	$ridgrab = getSingleRID($res['RID']);
+	// Find file time length (seconds)
+	$mp3FileLocal = $config['sccallsavedir'].'/'.$dashedDate.'/'.$CID.$config['sndext']; // Craft the filename to query for length
+	if (is_file($mp3FileLocal) == FALSE) {
+		growl("error","Could not find call");
+		return FALSE;
+	}
+	$mp3Handle = new mp3file($mp3FileLocal);
+	@$length = $mp3Handle->get_metadata()['Length'];
+	if (@!$length) {
+		growl("error","Internal file error");
+		return FALSE;
+	}
+	// End
+	  return array('UNIXTS' => $res['UNIXTS'],
+	  			     'TGID' => $res['TGID'],
+	 			     'RID' => $res['RID'],
+	 			     'DBLENGTH' => $res['LENGTH'],
+	 			     'CALCLENGTH' => $length,
+	 			     'CALLCOMMENT' => $res['COMMENT'],
+	 			     'TGNAME' => $tggrab['NAME'],
+	 			     'TGCOMMENT' => $tggrab['COMMENT'],
+	 			     'TGCATID' => $tggrab['CATEGORY'],
+	 			     'TGCATEGORY' => $catgrab['TAG'],
+	 			     'TGCATCOLOR' => $catgrab['COLOR'],
+	 			     'RIDCOMMENT' => $ridgrab['COMMENT'],
+	 			     'RIDNAME' => $ridgrab['NAME']);
+}
 function getSingleRID($RID){
 	$RID = SQLite3::escapeString(numOnly($RID)); // Sanitize for SQL in case
 	$db = new talkgroupsDB(); // Call database instance
@@ -144,6 +186,17 @@ function getSingleRID($RID){
 		  return array('RID' => $res['RID'],
 		  			     'NAME' => $res['NAME'],
 		 			     'COMMENT' => $res['COMMENT']);
+}
+function getSingleCat($TAG){
+	$TAG = SQLite3::escapeString(numOnly($TAG)); // Sanitize for SQL in case
+	$db = new talkgroupsDB(); // Call database instance
+		$db->busyTimeout(5000);
+		$result = $db->query("SELECT * FROM TAG WHERE ID='{$TAG}'"); // Select all the RID INFO from the DB
+		unset($db); // unlock database
+		$res = $result->fetchArray();
+		  return array('ID' => $res['ID'],
+		  			     'TAG' => $res['TAG'],
+		 			     'COLOR' => $res['COLOR']);
 }
 function getDateCalls($date){
 	#Give this function a date without hyphens e.g. 20140613 and it will show you all the talkgroups that played that day, and how many times each
@@ -170,20 +223,32 @@ function getDateCalls($date){
 	return $countTalkgroups;
 	#returns with an array with each talkgroup as key, number of times called as value
 }
-function getCallList($TGID,$date,$offset,$list){
+function getCallList($TGID,$date,$offset,$list,$sortby,$order){
 	#gets every call that happened on a day on a TG offsetted and limited
-	$date = SQLite3::escapeString(numOnly(substr($date,0,8))); // Sanitize for SQL in case
-	$TGID = SQLite3::escapeString(numOnly(substr($TGID,0,10))); // Sanitize for SQL in case
-	$offset = SQLite3::escapeString(numOnly(substr($offset,0,8))); // Sanitize for SQL in case
-	$list = SQLite3::escapeString(numOnly(substr($list,0,8))); // Sanitize for SQL in case
+	$date = SQLite3::escapeString(numOnly(substr($date,0,8))); // Sanitize for date to search
+	$TGID = SQLite3::escapeString(numOnly(substr($TGID,0,10))); // Sanitize for TGID
+	$offset = SQLite3::escapeString(numOnly(substr($offset,0,8))); // Sanitize page item skip
+	$list = SQLite3::escapeString(numOnly(substr($list,0,8))); // Sanitize num of returned items
+	$sortby = SQLite3::escapeString(charOnly(substr($sortby,0,8))); // Sanitize sort by (TGID,CID, etc)
+	$order = SQLite3::escapeString(charOnly(substr($order,0,4))); // Sanitize order (asc/desc)
 
+	if ($order == "desc" || $order == "asc") { // If user tries modifying asc/desc $_GET
+	}else{
+		growl("error","unknown error");
+		return;
+	}
 	if ($date>date('Ymd')) { // If date is future return error
 		growl("error","Date is the future");
 		return;
 	}
+
+	$order = strtoupper($order); // Make desc DESC ..etc
+	$sortby = strtoupper($sortby); // Make tgid TGID ..etc
+	
+
 	$db = new callsDB(); // Call database instance
 	$db->busyTimeout(5000);
-	$result = $db->query("SELECT * FROM '{$date}' WHERE TGID={$TGID} ORDER BY UNIXTS ASC LIMIT {$offset},{$list}; "); // Select all the calls DB
+	$result = $db->query("SELECT * FROM '{$date}' WHERE TGID={$TGID} ORDER BY {$sortby} {$order} LIMIT {$offset},{$list}; "); // Select all the calls DB
 	if ($db->lastErrorMsg() !== "not an error") {
 		growl("error","No calls for selected day");
 		return;
@@ -192,12 +257,93 @@ function getCallList($TGID,$date,$offset,$list){
 		if(!isset($res['TGID'])) continue;  //If there are no more values, kill loop
 		$returnedArray[$res['UNIXTS']] = array( 'RID' => $res['RID'], 'COMMENT' => $res['COMMENT']);
 	}
-	krsort($returnedArray);
+
+
+	
 	// Getting the number of total results //
 	$rows = $db->query("SELECT COUNT(TGID) as count FROM '{$date}' WHERE TGID={$TGID}; ");
 	$row = $rows->fetchArray();
 	$numRows = $row['count'];
+	if (@!$returnedArray) {
+		growl("warning","No calls returned");
+		return false;
+	}
 	#return $countTalkgroups;
+	#returns with an array with each talkgroup as key, number of times called as value
+	return array('COUNT' => $numRows, 'DATA' => $returnedArray);
+}
+function getQueryCallList($lastxdays,$query,$offset,$list,$sortby,$order){
+	#declare global variables to use
+		global $config;
+
+	#sanitize + prepare
+		$lastxdays = SQLite3::escapeString(numOnly(substr($lastxdays,0,5))); // Sanitize for date for the last x days to search
+		$query = SQLite3::escapeString(substr($query,0,64)); // Sanitize for user submitted query
+		$offset = SQLite3::escapeString(numOnly(substr($offset,0,8))); // Sanitize page item skip
+		$list = SQLite3::escapeString(numOnly(substr($list,0,8))); // Sanitize num of returned items
+		$sortby = SQLite3::escapeString(charOnly(substr($sortby,0,8))); // Sanitize sort by (TGID,CID, etc)
+		$order = SQLite3::escapeString(charOnly(substr($order,0,4))); // Sanitize order (asc/desc)
+		if ($order == "desc" || $order == "asc") { // If user tries modifying asc/desc $_GET
+		}else{
+			growl("error","unknown error");
+			return;
+		}
+		$order = strtoupper($order); // Make desc DESC ..etc
+		$sortby = strtoupper($sortby); // Make tgid TGID ..etc
+	#get every date that calls were recorded on
+		$datelist = scandir($config['callsavedir']); // scan call directory for days
+		unset ($datelist[0],$datelist[1]); // remove .. and . from array, keep only dates
+		foreach ($datelist as $number => $date) { // convert 2014-02-02 to 20140202 for use with SQL query
+			$datenodash = numOnly($date);
+			$returnDateList[$number] = $datenodash;
+		}
+		if ($order == "desc") { // sort dates by ascending or descending
+			krsort($returnDateList);
+		}
+		#sample data for $returnDateList
+		#type  : array
+		#key   : not important
+		#value : days to search
+		# 20
+	#separate the search term from the query
+		list($searchFor,$searchQuery) = explode(":", $query);
+		$searchQuery = trim($searchQuery);
+		$searchFor = trim($searchFor);
+		$terms = array('TGID','RID','TGNAME','RNAME','COMMENT'); // loop through available search terms, if not match return false with error
+		if (in_array($searchFor, $terms) == FALSE) {
+			growl("error","Unknown search term");
+			return FALSE;
+		}
+	#for every day run query
+		if ($searchFor == 'TGNAME' || $searchFor == 'RNAME') { // If talkgroup or radio name is searched, translate TGIDname to TGID for search below
+
+		}
+		if ($searchFor == 'TGNAME' || $searchFor == 'RNAME' || $searchFor == 'TGID' || $searchFor == 'RID' || $searchFor == 'COMMENT') {
+			foreach ($returnDateList as $devnull => $queryDate) {
+				$db = new callsDB(); // Call database instance
+				$db->busyTimeout(5000);
+				$result = $db->query("SELECT * FROM '{$queryDate}' WHERE {$searchFor}={$searchQuery} ORDER BY {$sortby} {$order} LIMIT {$offset},{$list}; "); // Select all the calls DB
+				if ($db->lastErrorMsg() !== "not an error") {
+					growl("error","No calls for selected day");
+					return;
+				}
+				while($res = $result->fetchArray(SQLITE3_ASSOC)){ //While there are SQL returned entries,
+					if(!isset($res['TGID'])) continue;  //If there are no more values, kill loop
+					$returnedArray[$res['UNIXTS']] = array( 'RID' => $res['RID'], 'COMMENT' => $res['COMMENT']);
+				}
+				// Getting the number of total results //
+				$rows = $db->query("SELECT COUNT(TGID) as count FROM '{$queryDate}' WHERE TGID={$TGID}; ");
+				$row = $rows->fetchArray();
+				$numRows = $numRows+$row['count'];
+				if (@!$returnedArray) {
+					growl("warning","No calls returned");
+					return false;
+				}
+				#return $countTalkgroups;
+			}
+		}
+		
+	
 	#returns with an array with each talkgroup as key, number of times called as value
 	return array('COUNT' => $numRows, 'DATA' => $returnedArray);
 }

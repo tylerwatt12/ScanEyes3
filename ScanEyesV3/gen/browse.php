@@ -2,10 +2,14 @@
 if (basename($_SERVER['SCRIPT_FILENAME']) == basename($_SERVER['REQUEST_URI'])){
 	exit();
 }
+if (@!$_GET['browsedate']) {
+	growl("error","internal error");
+	exit();
+}
 include 'libraries/db-read.php';
 secReq($config['mintgidbrowselvl']);
 $dateToQuery = numOnly($_GET['browsedate']);
-$dateName = date('l, F nS, Y',strtotime($_GET['browsedate']));
+$dateName = date('l, F jS, Y',strtotime($_GET['browsedate']));
 $TGS = getDateCalls($dateToQuery); //fetch call occurances
 $TGNames = getTGList();
 ?>
@@ -13,8 +17,7 @@ $TGNames = getTGList();
 <table id="talkgroups">
 	<thead>
 		<th>Calls</th>
-		<th>TGID</th>
-		<th>TGName</th>
+		<th>Talkgroup</th>
 	</thead>
 	<tbody>
 	<?php 
@@ -26,11 +29,16 @@ $TGNames = getTGList();
 			}
 			echo "	<tr>
 						<td>{$calls}</td>
-						<td><a href='?page=tgid&TGID={$TGID}&date={$dateToQuery}'>{$TGID}</a></td>
-						<td>{$displayTGName}</td>
+						<td title='{$TGID}'><a href='?page=tgid&TGID={$TGID}&date={$dateToQuery}'>{$displayTGName}</a></td>
 					</tr>";
 		}
 	?>
 		
 	</tbody>
 </table>
+<a href='?page=browse&browsedate=<?php echo date('Y-m-d',strtotime("-1 month",strtotime($_GET['browsedate']))); ?>'>-1 month</a>
+<a href='?page=browse&browsedate=<?php echo date('Y-m-d',strtotime("-1 week",strtotime($_GET['browsedate']))); ?>'>-1 week</a>
+<a href='?page=browse&browsedate=<?php echo date('Y-m-d',strtotime("-1 day",strtotime($_GET['browsedate']))); ?>'>-1 day</a>
+<a href='?page=browse&browsedate=<?php echo date('Y-m-d',strtotime("+1 day",strtotime($_GET['browsedate']))); ?>'>+1 day</a>
+<a href='?page=browse&browsedate=<?php echo date('Y-m-d',strtotime("+1 week",strtotime($_GET['browsedate']))); ?>'>+1 week</a>
+<a href='?page=browse&browsedate=<?php echo date('Y-m-d',strtotime("+1 month",strtotime($_GET['browsedate']))); ?>'>+1 month</a>

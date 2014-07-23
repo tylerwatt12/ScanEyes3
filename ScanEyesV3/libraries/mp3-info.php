@@ -34,7 +34,7 @@ class mp3file
     //-------------------
     public function get_metadata()
     {
-        return $this->mp3data;
+        return @$this->mp3data;
     }
     protected function readmp3frame()
     {
@@ -113,13 +113,13 @@ class mp3file
     }
     protected function startswithid3()
     {
-        return ($this->block[1]==73 && //I
+        return (@$this->block[1]==73 && //I
                 $this->block[2]==68 && //D
                 $this->block[3]==51);  //3
     }
     protected function startswithpk()
     {
-        return ($this->block[1]==80 && //P
+        return (@$this->block[1]==80 && //P
                 $this->block[2]==75);  //K
     }
     protected function containsvbrxing()
@@ -127,7 +127,7 @@ class mp3file
         //echo "<!--".$this->block[37]." ".$this->block[38]."-->";
         //echo "<!--".$this->block[39]." ".$this->block[40]."-->";
         return(
-               ($this->block[37]==88  && //X 0x58
+               (@$this->block[37]==88  && //X 0x58
                 $this->block[38]==105 && //i 0x69
                 $this->block[39]==110 && //n 0x6E
                 $this->block[40]==103)   //g 0x67
