@@ -23,7 +23,12 @@ if ($callInfo['UNIXTS'] == FALSE) {
 	growl("error","No such call found");
 	exit();
 }
-
+if (empty($callInfo['RIDNAME']) == TRUE) { // If there is no RNAME show RID
+	$callInfo['RIDNAME'] = $callInfo['RID'];
+}
+if (empty($callInfo['TGNAME']) == TRUE) { // If there is no TGNAME show TGID
+	$callInfo['TGNAME'] = $callInfo['TGID'];
+}
 ?>
 <audio autoplay controls><source src="<?php echo $ffurl; ?>" type="audio/mpeg"></audio>
 <?php

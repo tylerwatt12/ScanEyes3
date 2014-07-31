@@ -8,7 +8,7 @@ if (@!$_GET['browsedate']) {
 }
 include 'libraries/db-read.php';
 secReq($config['mintgidbrowselvl']);
-$dateToQuery = numOnly($_GET['browsedate']);
+$dateToQuery = date('Ymd',strtotime($_GET['browsedate']));
 $dateName = date('l, F jS, Y',strtotime($_GET['browsedate']));
 $TGS = getDateCalls($dateToQuery); //fetch call occurances
 $TGNames = getTGList();
@@ -23,7 +23,7 @@ $TGNames = getTGList();
 	<?php 
 		foreach ($TGS as $TGID => $calls) {
 			if (!@$TGNames[$TGID]['NAME']) {
-				$displayTGName = "Unknown"; // If TGID isn't in name DB
+				$displayTGName = $TGID; // If TGID isn't in name DB
 			}else{
 				$displayTGName = $TGNames[$TGID]['NAME'];
 			}

@@ -31,16 +31,22 @@ if ($_GET['list'] > $maxrpp) { // If wanted number of calls is over maximum
 }
 
 
-$dateName = date('l, F nS, Y',strtotime($_GET['date']));
+$dateName = date('l, F jS, Y',strtotime($_GET['date']));
 $dashedDate = date('Y-m-d',strtotime($_GET['date']));
 $TGID = numOnly($_GET['TGID']);
-$date = numOnly($_GET['date']);
+$date = date('Ymd',strtotime($_GET['date']));
+#$date = numOnly($_GET['date']);
 $offset = numOnly($_GET['offset']);
 $list = numOnly($_GET['list']);
 $sortby = charOnly($_GET['sortby']);
 $order = charOnly($_GET['order']);
 $calls = getCallList($TGID,$date,$offset,$list,$sortby,$order); //Gets list of calls that match 
-$TGName = getTGlist()[$TGID]['NAME'];
+if (empty(getTGlist()[$TGID]['NAME']) == TRUE) { // if there is no TGName, use TGID
+	$TGName =$TGID;
+}else{
+	$TGName = getTGlist()[$TGID]['NAME'];
+}
+
 $RID = getRList();
 
 #for form
@@ -94,7 +100,7 @@ if ($sortby == "COMMENT"){$htmlformSortbyCOMMENT = "selected";}else{$htmlformSor
 		<th>CID</th>
 		<th>Time</th>
 		<th>Length</th>
-		<th>Name</th>
+		<th>Source</th>
 		<th>Comment</th>
 	</thead>
 	<tbody>
@@ -111,7 +117,7 @@ if ($sortby == "COMMENT"){$htmlformSortbyCOMMENT = "selected";}else{$htmlformSor
 						@$length = $mp3Handle->get_metadata()['Length'];
 							if (@$length) { // If call is over 0 seconds long, show call
 								if (@!$RID[$valueArray['RID']]) { // If no formal RID name found, make RID unknown
-									$ridname = "Unknown";
+									$ridname = $valueArray['RID'];
 								}else{
 									$ridname = $RID[$valueArray['RID']]['NAME'];
 								}	

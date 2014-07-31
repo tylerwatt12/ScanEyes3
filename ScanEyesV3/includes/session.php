@@ -14,7 +14,10 @@ if ($_SESSION['reputation'] < 1) {
 function customError($errno, $errstr) {
  # echo "<b>Error:</b> [$errno] $errstr";
 }
-#set_error_handler("customError");
+if ($_SESSION['usrlvl'] < 4) { // Don't handle errors if user isn't admin
+	set_error_handler("customError");
+}
+#
 #If
 
 /*
